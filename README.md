@@ -37,7 +37,9 @@ end
 
 ExampleWorld.new("./content/test_basic", (0..10),(0..10),(0..10)).draw_world # Draws to a PNG
 ```
+
 Should produce this
+
 ![test_world](http://i.imgur.com/jLC0oMm.png)
 
 ## Development
