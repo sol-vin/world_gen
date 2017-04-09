@@ -1,0 +1,13 @@
+name: world_gen
+version: 0.01
+
+dependencies:
+  perlin_noise:
+    github: redcodefinal/perlin_noise
+  stumpy_png:
+    github: l3kn/stumpy_png
+
+authors:
+  - Ian Rash <redcodefinal@gmail.com>
+
+license: MIT

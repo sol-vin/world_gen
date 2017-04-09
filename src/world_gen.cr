@@ -1,0 +1,1 @@
+require "./world_gen/*"
