@@ -2,7 +2,7 @@ require "./png_assets"
 require "./png_render"
 require "../../data/world"
 
-class PNGWorld < World
+abstract class PNGWorld < World
   include PNGRender
   
   getter assets : PNGAssets
@@ -11,4 +11,6 @@ class PNGWorld < World
     @assets = PNGAssets.new asset_directory
     super(x_range, y_range, z_range)
   end
+
+  abstract def make_passes
 end
