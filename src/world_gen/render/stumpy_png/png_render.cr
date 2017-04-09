@@ -8,7 +8,7 @@ module PNGRender
                           (@assets.tile_height/2.0).round.to_i32)
     min_position_x = ((x_range.size * spacing.x) + x_range.size).abs
     min_position_y = ((@assets.block_height / 2.0).round.to_i32 * (z_range.size + 1)).abs
-    Vector2.new((-x * spacing.x) + (y * spacing.x) - y + x + min_position_x,
+    Vector2.new((-x * spacing.x) + (y * spacing.x) - y + x + min_position_x - spacing.x,
                 (x * spacing.y) + (y * spacing.y) - y - x + min_position_y) 
   end
   

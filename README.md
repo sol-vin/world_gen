@@ -10,7 +10,7 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   world_gen:
-    github: redcoefinal/world_gen
+    github: redcodefinal/world_gen
 ```
 
 
