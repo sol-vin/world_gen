@@ -2,6 +2,7 @@ class SquareWave < Pass
   getter axis : Symbol
   getter wave_length : UInt32 = 10
   def initialize(world, @axis = :x)
+    super world
   end
    
   

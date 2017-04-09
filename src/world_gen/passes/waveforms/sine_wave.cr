@@ -2,6 +2,7 @@ class SineWave < Pass
   getter axis : Symbol
 
   def initialize(world, @axis = :x)
+    super world
   end
    
   # TODO: Add controls for length
