@@ -136,7 +136,7 @@ module PNGRender
     end
   end
 
-  def draw_world
+  def draw_world(filename : String)
     make_world
     #TODO:  Write 
     image_bounds = calculate_image_bounds
@@ -146,6 +146,6 @@ module PNGRender
 
     draw_tiles(canvas)
     draw_blocks(canvas)
-    StumpyPNG.write(canvas, "world.png")
+    StumpyPNG.write(canvas, filename)
   end
 end

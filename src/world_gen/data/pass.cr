@@ -6,7 +6,7 @@ class Pass
   # Reference to the parent world
   getter world : World
 
-  def initialize(@world)
+  def initialize(@world, *args)
   end
 
   # Makes a tile using the pass

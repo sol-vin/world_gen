@@ -1,18 +1,9 @@
 require "../data/world"
-require "../render/stumpy_png/*"
+require "../render/stumpy_png/png_world"
 require "../passes/solid_on"
-require "../passes/debug_color"
+require "../passes/debug/debug_color"
 
-class ExampleWorld < World
-  include PNGRender
-  
-  getter assets : PNGAssets
-
-  def initialize(asset_directory : String, @x_range, @y_range, @z_range)
-    @assets = PNGAssets.new asset_directory
-    super(x_range, y_range, z_range)
-  end
-
+class ExampleWorld < PNGWorld
   def make_passes
     make_pass SolidOn
     make_pass DebugColor
