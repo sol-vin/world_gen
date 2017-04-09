@@ -1,6 +1,6 @@
 # world_gen
 
-TODO: Write a description here
+A layered logic world generation library. You layer on passes of logic that change the landscape however you want.
 
 ## Installation
 
@@ -16,13 +16,29 @@ dependencies:
 
 ## Usage
 
-
 ```crystal
 require "world_gen"
+
+class ExampleWorld < World
+  include PNGRender # Include to allow your world to be draw isometrically to a png
+  
+  getter assets : PNGAssets # Needed to hold the PNG assets
+
+  def initialize(asset_directory : String, @x_range, @y_range, @z_range)
+    @assets =  PNGAssets.new asset_directory
+    super(x_range, y_range, z_range)
+  end
+
+  def make_passes
+    make_pass SolidOn    # Tells every block to be on always
+    make_pass DebugColor # Tells every block what color it will be.
+  end
+end
+
+ExampleWorld.new("./content/test_basic", (0..10),(0..10),(0..10)).draw_world # Draws to a PNG
 ```
-
-
-TODO: Write usage instructions here
+Should produce this
+![test_world](http://i.imgur.com/jLC0oMm.png)
 
 ## Development
 
