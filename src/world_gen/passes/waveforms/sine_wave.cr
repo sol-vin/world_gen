@@ -8,6 +8,7 @@ class SineWave < Pass
   # TODO: Add controls for length
   def get_block_type(x, y, z)
     two_pi = 2 * 3.141592
+    height = 0
     if axis == :x
       height = (Math.sin(two_pi * (x - world.x_range.begin)/world.x_range.size * 4.0)) * (world.z_range.size/3.0) + (world.z_range.size/3.0)
     elsif axis == :y
