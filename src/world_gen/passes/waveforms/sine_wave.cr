@@ -1,4 +1,5 @@
 class SineWave < Pass
+  TWO_PI = 2 * 3.141592
   getter axis : Symbol
 
   def initialize(world, @axis = :x)
@@ -7,15 +8,14 @@ class SineWave < Pass
    
   # TODO: Add controls for length
   def get_block_type(x, y, z)
-    two_pi = 2 * 3.141592
     height = 0
     if axis == :x
-      height = (Math.sin(two_pi * (x - world.x_range.begin)/world.x_range.size * 4.0)) * (world.z_range.size/3.0) + (world.z_range.size/3.0)
+      height = get_height(x, world.x_range, world.z_range.size)
     elsif axis == :y
-      height = (Math.sin(two_pi * (y - world.y_range.begin)/world.y_range.size * 4.0)) * (world.z_range.size/3.0) + (world.z_range.size/3.0)      
+      height = get_height(y, world.y_range, world.z_range.size)      
     elsif axis == :xy
-      x_height = (Math.sin(two_pi * (x - world.x_range.begin)/world.x_range.size * 4.0)) * (world.z_range.size/3.0) + (world.z_range.size/3.0)
-      y_height = (Math.sin(two_pi * (y - world.y_range.begin)/world.y_range.size * 4.0)) * (world.z_range.size/3.0) + (world.z_range.size/3.0)
+      x_height = get_height(x, world.x_range, world.z_range.size)
+      y_height = get_height(y, world.y_range, world.z_range.size)
 
       max = [x_height, y_height].max
       min = [x_height, y_height].min
@@ -28,5 +28,10 @@ class SineWave < Pass
     else
       nil
     end
+  end
+
+  def get_height(n : Int32, n_range : Range(Int32, Int32), max_height : Int32)
+    # Still dont know why 4.0 and 2.0 work right here?
+    Math.sin(TWO_PI * (n - n_range.begin)/n_range.size * 4.0) * max_height/2.0 + max_height/2.0
   end
 end
