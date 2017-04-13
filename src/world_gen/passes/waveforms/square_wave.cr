@@ -1,3 +1,5 @@
+require "../../data/infinite_pass"
+
 class SquareWave < Pass
   getter axis : Symbol
   getter wave_length : UInt32 = 10
@@ -6,7 +8,7 @@ class SquareWave < Pass
   end
    
   
-  def get_block_type(x, y, z)
+  def get_block_type(last_block : Block, x, y, z)
     if axis == :x
       if x % wave_length*2 < wave_length && (z - wolrd.z_range.begin) < world.z_range.size
         "block"

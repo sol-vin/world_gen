@@ -1,4 +1,6 @@
-class SineWave < Pass
+require "../../data/infinite_pass"
+
+class SineWave < InfinitePass
   TWO_PI = 2 * 3.141592
   getter axis : Symbol
 
@@ -7,7 +9,7 @@ class SineWave < Pass
   end
    
   # TODO: Add controls for length
-  def get_block_type(x, y, z)
+  def get_block_type(block, x, y, z)
     height = 0
     if axis == :x
       height = get_height(x, world.x_range, world.z_range.size)

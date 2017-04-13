@@ -6,7 +6,7 @@ shards:
 
   stumpy_core:
     git: https://github.com/l3kn/stumpy_core.git
-    commit: 5cb0a88a17c78a30c7041b96a7b08202a32d657e
+    commit: 0764149a3f4d1c92748bf1275c73c0cdbe96fcb6
 
   stumpy_png:
     github: l3kn/stumpy_png

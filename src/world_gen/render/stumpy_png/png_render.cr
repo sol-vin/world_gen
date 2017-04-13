@@ -1,6 +1,8 @@
 require "stumpy_png"
-require "./color"
 
+require "../../data/*"
+
+require "./color"
 require "./png_assets"
 
 module PNGRender

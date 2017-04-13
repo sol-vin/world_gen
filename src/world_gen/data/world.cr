@@ -1,5 +1,3 @@
-require "./*"
-
 #Class to make an isometric world.
 abstract class World
   # The different faces of a block

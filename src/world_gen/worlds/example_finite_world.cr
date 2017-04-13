@@ -1,14 +1,14 @@
-require "../data/world"
-require "../render/stumpy_png/png_world"
+require "../data/finite_world"
+require "../render/stumpy_png/png_render"
 require "../passes/solid_on"
 require "../passes/debug/debug_color"
 
-class ExampleWorld < InfiniteWorld
+class ExampleFiniteWorld < InfiniteWorld
   include PNGRender
 
   def initialize(x_range, y_range, z_range)
-    super x_range, y_rage, z_range
-    assets.open_content "../../../content/test_basic"
+    super x_range, y_range, z_range
+    assets.open_content "./content/test_basic/"
   end
 
   def make_passes
