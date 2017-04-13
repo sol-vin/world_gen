@@ -1,5 +1,5 @@
 require "../data/infinite_world"
-require "../data/proc_pass"
+require "../data/pass"
 require "../render/stumpy_png/png_render"
 require "../passes/solid_on"
 require "../passes/debug/debug_color"

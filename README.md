@@ -2,6 +2,8 @@
 
 A layered logic world generation library. You layer on passes of logic that change the landscape however you want.
 
+![test_world](http://i.imgur.com/jLC0oMm.png)
+
 ## Installation
 
 
@@ -62,12 +64,12 @@ class ExampleInfiniteWorld < InfiniteWorld
 
   # override this in your World class to layer the passes you want.
   protected def make_passes
-    pass = ProcPass.new
+    pass = InfinitePass.new
     pass.define_tile(:type) do |world, last_tile, x, y|
       "tile"
     end   
 
-    pass.define_block(:type) do |world, last_tile, x, y, z|
+    pass.define_block(:type) do |world, last_block, x, y, z|
       "block"
     end
     passes << pass
@@ -95,7 +97,7 @@ class SolidOn < InfinitePass
     tile_type
   end
 end
-
+```
 
 ###Rendering
 Currently there is only one renderer, which renders the world in an isometric format to a PNG. However, there is full support for adding different kinds of renderers in the form of modules. 
@@ -121,8 +123,6 @@ class ExampleInfiniteWorld < InfiniteWorld
   end
 end
 ```
-
-![test_world](http://i.imgur.com/jLC0oMm.png)
 
 ## Development
 
