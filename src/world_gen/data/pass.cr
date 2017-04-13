@@ -2,11 +2,7 @@ require "./block"
 require "./tile"
 
 class Pass
-
-  # Reference to the parent world
-  getter world : World
-
-  def initialize(@world, *args)
+  def initialize(*args)
   end
 
   # Makes a tile using the pass
@@ -28,31 +24,31 @@ class Pass
   end
 
   # Gets a tile type. If this returns ```nil```, this option will not get changed on a worlds tile 
-  def get_tile_type(x : Int32, y : Int32) : String?
+  def get_tile_type(last_tile : Tile?, x : Int32, y : Int32) : String?
     nil
   end
 
   # Gets a tile rotation. If this returns ```nil```, this option will not get changed on a worlds tile 
-  def get_tile_rotation(x : Int32, y : Int32) : String?
+  def get_tile_rotation(last_tile : Tile?, x : Int32, y : Int32) : String?
     nil
   end
   # Gets a tile color. If this returns ```nil```, this option will not get changed on a worlds tile 
-  def get_tile_color(x : Int32, y : Int32) : Color? 
+  def get_tile_color(last_tile : Tile?, x : Int32, y : Int32) : Color? 
     nil
   end
 
   # Gets a block type. If this returns ```nil```, this option will not get changed on a worlds block 
-  def get_block_type(x : Int32, y : Int32, z : Int32) : String?
+  def get_block_type(last_block : Block?, x : Int32, y : Int32, z : Int32) : String?
     nil
   end
 
   # Gets a block rotation. If this returns ```nil```, this option will not get changed on a worlds block 
-  def get_block_rotation(x : Int32, y : Int32, z : Int32) : String?
+  def get_block_rotation(last_block : Block?, x : Int32, y : Int32, z : Int32) : String?
     nil
   end
 
   # Gets a block color. If this returns ```nil```, this option will not get changed on a worlds block
-  def get_block_color(x : Int32, y : Int32, z : Int32) : Color?
+  def get_block_color(last_block : Block?, x : Int32, y : Int32, z : Int32) : Color?
     nil
   end
 end

@@ -8,19 +8,19 @@ class SquareWave < Pass
   
   def get_block_type(x, y, z)
     if axis == :x
-      if x % wave_length*2 < wave_length and z < world.z_range.size
+      if x % wave_length*2 < wave_length && (z - wolrd.z_range.begin) < world.z_range.size
         "block"
       else
         nil
       end
     elsif axis == :y
-      if y % wave_length*2 < wave_length and z < world.z_range.size
+      if y % wave_length*2 < wave_length && (z - wolrd.z_range.begin) < world.z_range.size
         "block"
       else
         nil
       end
     elsif axis = :xy
-      if x % wave_length*2 < wave_length and y % wave_length*2 < wave_length and z < world.z_range.size
+      if x % wave_length*2 < wave_length && y % wave_length*2 < wave_length && (z - wolrd.z_range.begin) < world.z_range.size
         "block"
       else
         nil
