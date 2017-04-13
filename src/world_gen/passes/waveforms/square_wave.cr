@@ -1,6 +1,6 @@
-require "../../data/infinite_pass"
+require "../../data/pass"
 
-class SquareWave < Pass
+class SquareWave < InfinitePass
   getter axis : Symbol
   getter wave_length : UInt32 = 10
   def initialize(world, @axis = :x)

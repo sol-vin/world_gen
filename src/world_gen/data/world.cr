@@ -64,7 +64,7 @@ abstract class World
   
   abstract def assets
 
-  abstract def make_passes
+  protected abstract def make_passes
   
   def make_pass(pass : typeof(Pass), *args)
     passes << pass.new(self, *args)

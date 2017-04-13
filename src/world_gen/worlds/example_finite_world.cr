@@ -11,7 +11,7 @@ class ExampleFiniteWorld < InfiniteWorld
     assets.open_content "./content/test_basic/"
   end
 
-  def make_passes
+  protected def make_passes
     make_pass SolidOn
     make_pass DebugColor
   end

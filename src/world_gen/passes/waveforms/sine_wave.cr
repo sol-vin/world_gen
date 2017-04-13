@@ -1,4 +1,4 @@
-require "../../data/infinite_pass"
+require "../../data/pass"
 
 class SineWave < InfinitePass
   TWO_PI = 2 * 3.141592

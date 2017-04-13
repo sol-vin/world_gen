@@ -1,4 +1,4 @@
-require "../../data/infinite_pass"
+require "../../data/pass"
 
 class DebugColor < InfinitePass
   def get_tile_color(tile : Tile, x : Int32, y : Int32) : Color?

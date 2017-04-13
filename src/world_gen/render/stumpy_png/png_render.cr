@@ -37,9 +37,9 @@ module PNGRender
   def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
     unless tile.type.nil?
       unless tile.color.nil?
-        asset = assets.blocks[tile.type]["base"].map {|p, x, y| p.multiply(tile.color.as(Color).to_scrgba)}
+        asset = assets.tiles[tile.type]["base"].map {|p, x, y| p.multiply(tile.color.as(Color).to_scrgba)}
       else
-        asset = assets.blocks[tile.type]["base"]
+        asset = assets.tiles[tile.type]["base"]
       end
       canvas.paste(asset, position.x, position.y)
     end

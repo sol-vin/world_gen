@@ -52,3 +52,19 @@ class Pass
     nil
   end
 end
+
+class FinitePass < Pass
+  getter world : FiniteWorld
+
+  def initialize(@world, *args)
+    super *args
+  end
+end
+
+class InfinitePass < Pass
+  getter world : World
+
+  def initialize(@world, *args)
+    super *args
+  end
+end

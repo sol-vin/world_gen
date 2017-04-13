@@ -1,4 +1,4 @@
-require "../../data/infinite_pass"
+require "../../data/pass"
 
 class SolidOn < InfinitePass
   property block_type : String = "block"

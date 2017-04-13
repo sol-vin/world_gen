@@ -1,4 +1,5 @@
 require "../data/infinite_world"
+require "../data/proc_pass"
 require "../render/stumpy_png/png_render"
 require "../passes/solid_on"
 require "../passes/debug/debug_color"
@@ -11,8 +12,8 @@ class ExampleInfiniteWorld < InfiniteWorld
     assets.open_content "./content/test_basic/"
   end
 
-  def make_passes
-    make_pass SolidOn
+  protected def make_passes
+    make_pass SolidOn   
     make_pass DebugColor
   end
 end
