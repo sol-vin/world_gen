@@ -23,7 +23,7 @@ abstract class World
                              :back => { :x => 0, :y => -1}}
 
   # Which direction the camera is facing currently
-  getter view : Symbol = VIEWS.values.last
+  getter view = VIEWS.values.last
 
   # The assets for this world
   #getter assets : T
