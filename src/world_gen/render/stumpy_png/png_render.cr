@@ -58,7 +58,7 @@ module PNGRender
 
   def draw_tiles(canvas : StumpyCore::Canvas)
     case view
-      when :south_east
+      when "south_east"
         y_range.each do |y|
           x_range.each do |x|
             tile = get_tile(x,y)
@@ -66,7 +66,7 @@ module PNGRender
             draw_tile(canvas, tile, position)
           end
         end
-      when :south_west
+      when "south_west"
         x_range.each do |y|
           y_range.each do |x|
             tile = get_tile(x_range.size - 1 - y, x)
@@ -74,7 +74,7 @@ module PNGRender
             draw_tile(canvas, tile, position)
           end
         end
-      when :north_west
+      when "north_west"
         y_range.each do |y|
           x_range.each do |x|
             tile = get_tile(x_range.size - 1 - x, y_range.size - 1 - y)
@@ -82,7 +82,7 @@ module PNGRender
             draw_tile(canvas, tile, position)
           end
         end
-      when :north_east
+      when "north_east"
         x_range.each do |y|
           y_range.each do |x|
             tile = get_tile(y, y_range.size - 1 - x)
@@ -97,7 +97,7 @@ module PNGRender
 
   def draw_blocks(canvas : StumpyCore::Canvas)
     case view
-      when :south_east
+      when "south_east"
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
@@ -107,7 +107,7 @@ module PNGRender
             end
           end
         end
-      when :south_west
+      when "south_west"
         x_range.each do |y|
           y_range.each do |x|
             z_range.each do |z|
@@ -117,7 +117,7 @@ module PNGRender
             end
           end
         end
-      when :north_west
+      when "north_west"
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
@@ -127,7 +127,7 @@ module PNGRender
             end
           end
         end
-      when :north_east
+      when "north_east"
         x_range.each do |y|
           y_range.each do |x|
             z_range.each do |z|
