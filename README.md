@@ -80,7 +80,7 @@ end
 ```
 
 #### Making your own passes
-Either override the methods get_tile_* and get_block_* after inheriting a pass or use  a ProcPass to inline define during make_passes.
+Either override the methods get_tile_* and get_block_* after inheriting a pass or use a FinitePass or InfinitePass to inline define during make_passes.
 
 ```crystal
 require "../../data/pass"
@@ -100,6 +100,7 @@ end
 ```
 
 ###Rendering
+
 Currently there is only one renderer, which renders the world in an isometric format to a PNG. However, there is full support for adding different kinds of renderers in the form of modules. 
 
 ```crystal

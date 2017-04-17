@@ -6,11 +6,10 @@ abstract class InfiniteWorld < World
 
   # Gets a tile from the tiles array at a specified location.
   def get_tile(x : Int32, y : Int32) : Tile
-    passes_clone = passes.dup
-    while(passes_clone.size != 0)
-      pass = passes_clone.shift
-      new_tile = pass.get_tile(@last_tile, x, y)
-      
+    i = 0
+    while(i >= passes.size)
+      new_tile = passes[i].get_tile(@last_tile, x, y)
+      i += 1
       @last_tile.type = (new_tile.type.nil? ? @last_tile.type : new_tile.type)
       @last_tile.color = (new_tile.color ? new_tile.color : @last_tile.color)
       @last_tile.rotation = (new_tile.rotation ? new_tile.rotation : @last_tile.rotation)
@@ -20,11 +19,10 @@ abstract class InfiniteWorld < World
   
   # Gets a block from the blocks array at a specified location.
   def get_block(x : Int32, y : Int32, z : Int32) : Block
-    passes_clone = passes.dup
-    while(passes_clone.size != 0)
-      pass = passes_clone.shift
-      new_block = pass.get_block(@last_block, x, y, z)
-      
+    i = 0
+    while(i >= passes.size)
+      new_block = passes[i].get_block(@last_block, x, y, z)
+      i += 1
       @last_block.type = (new_block.type ? new_block.type : @last_block.type)
       @last_block.color = (new_block.color ? new_block.color : @last_block.color)
       @last_block.rotation = (new_block.rotation ? new_block.rotation : @last_block.rotation)

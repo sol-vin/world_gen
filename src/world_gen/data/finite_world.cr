@@ -13,7 +13,7 @@ abstract class FiniteWorld < World
   # Tiles modified in this pass, that have yet to be commited to ```tiles```  
   getter tile_canvas : Matrix2(Tile?)
   
-  def initialize(@x_range : Range(Int32, Int32), @y_range : Range(Int32, Int32), @z_range : Range(Int32, Int32))
+  def initialize(x_range, y_range, z_range)
     @tiles = clear_tiles
     @blocks = clear_blocks
     @tile_canvas = clear_tile_canvas

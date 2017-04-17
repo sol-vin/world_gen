@@ -4,10 +4,10 @@ abstract class World
   DIRECTIONS = [:north, :south, :east, :west]
 
   # The different camera rotations. 
-  VIEWS = {:north_west => :south_west, :north_east => :north_west, :south_east => :north_east, :south_west => :south_east}
+  VIEWS = {"north_west" => "south_west", "north_east" => "north_west", "south_east" => "north_east", "south_west" => "south_east"}
 
   # The possible rotations of a block
-  ROTATIONS = [:deg0, :deg90, :deg180, :deg270]
+  ROTATIONS = ["deg0", "deg90", "deg180", "deg270"]
 
   # The potential neighbors of a block
   POSSIBLE_BLOCK_NEIGHBORS = {:front => {:x => 0, :y => 1, :z => 0},
