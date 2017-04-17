@@ -7,7 +7,7 @@ abstract class InfiniteWorld < World
   # Gets a tile from the tiles array at a specified location.
   def get_tile(x : Int32, y : Int32) : Tile
     i = 0
-    while(i >= passes.size)
+    while(i < passes.size)
       new_tile = passes[i].get_tile(@last_tile, x, y)
       i += 1
       @last_tile.type = (new_tile.type.nil? ? @last_tile.type : new_tile.type)
@@ -20,7 +20,7 @@ abstract class InfiniteWorld < World
   # Gets a block from the blocks array at a specified location.
   def get_block(x : Int32, y : Int32, z : Int32) : Block
     i = 0
-    while(i >= passes.size)
+    while(i < passes.size)
       new_block = passes[i].get_block(@last_block, x, y, z)
       i += 1
       @last_block.type = (new_block.type ? new_block.type : @last_block.type)
