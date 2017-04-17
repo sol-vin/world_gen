@@ -1,33 +1,32 @@
 require "./world"
 
 abstract class InfiniteWorld < World
-  @last_tile = Tile.new
-  @last_block = Block.new
-
   # Gets a tile from the tiles array at a specified location.
   def get_tile(x : Int32, y : Int32) : Tile
+    last_tile = Tile.new
+    last_block = Block.new
     i = 0
     while(i < passes.size)
       new_tile = passes[i].get_tile(@last_tile, x, y)
       i += 1
-      @last_tile.type = (new_tile.type.nil? ? @last_tile.type : new_tile.type)
-      @last_tile.color = (new_tile.color ? new_tile.color : @last_tile.color)
-      @last_tile.rotation = (new_tile.rotation ? new_tile.rotation : @last_tile.rotation)
+      last_tile.type = (new_tile.type ? new_tile.type : last_tile.type)
+      last_tile.color = (new_tile.color ? new_tile.color : last_tile.color)
+      last_tile.rotation = (new_tile.rotation ? new_tile.rotation : last_tile.rotation)
     end
-    @last_tile
+    last_tile
   end
   
   # Gets a block from the blocks array at a specified location.
   def get_block(x : Int32, y : Int32, z : Int32) : Block
     i = 0
     while(i < passes.size)
-      new_block = passes[i].get_block(@last_block, x, y, z)
+      new_block = passes[i].get_block(last_block, x, y, z)
       i += 1
-      @last_block.type = (new_block.type ? new_block.type : @last_block.type)
-      @last_block.color = (new_block.color ? new_block.color : @last_block.color)
-      @last_block.rotation = (new_block.rotation ? new_block.rotation : @last_block.rotation)
+      last_block.type = (new_block.type ? new_block.type : last_block.type)
+      last_block.color = (new_block.color ? new_block.color : last_block.color)
+      last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation)
     end 
-    @last_block
+    last_block
   end
 
   def make_pass(pass, *args)
