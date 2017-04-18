@@ -25,9 +25,6 @@ abstract class World
   # Which direction the camera is facing currently
   getter view : String = VIEWS.values.last
 
-  # The assets for this world
-  #getter assets : T
-
   # The X range of the world.
   getter x_range : Range(Int32, Int32)
 
@@ -62,8 +59,10 @@ abstract class World
     [] of Pass
   end
   
+  # Weak abstraction for assets
   abstract def assets
-
+  
+  # Abstraction for where the user makes the passes they want.
   protected abstract def make_passes
   
   def make_pass(pass : typeof(Pass), *args)

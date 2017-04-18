@@ -1,5 +1,7 @@
 require "./color"
 
+#TODO: Change to struct but first have to fix how set_tile works in finite_world.cr
+
 class Tile
   property type : String?
   property rotation : String?
