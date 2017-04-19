@@ -37,21 +37,21 @@ abstract class InfiniteWorld < World
       new_block = passes[i].get_block(last_block, x, y, z)
       i += 1
       if new_block.type == ":erase:"
-        last_block.type = nil 
+        last_block.type = nil
       else
-        last_block.type = (new_block.type ? new_block.type : last_block.type) 
+        last_block.type = (new_block.type ? new_block.type : last_block.type)
       end
 
       if new_block.color == ":erase:"
-        last_block.color = nil 
+        last_block.color = nil
       else
-        last_block.color = (new_block.color ? new_block.color : last_block.color) 
+        last_block.color = (new_block.color ? new_block.color : last_block.color)
       end
 
       if new_block.rotation == ":erase:"
-        last_block.rotation = nil 
+        last_block.rotation = nil
       else
-        last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation) 
+        last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation)
       end
     end 
     last_block

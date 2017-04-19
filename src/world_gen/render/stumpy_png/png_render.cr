@@ -3,6 +3,7 @@ require "stumpy_png"
 require "../../data/*"
 
 require "./color"
+require "./canvas"
 require "./png_assets"
 
 module PNGRender
@@ -34,25 +35,28 @@ module PNGRender
     }
   end
 
+
+  # TODO: Fix draw_bock and draw_tile so it doesn't have to make a new Canvas just to change color
+  #       Easiest way is to make a new method on Canvas that is a mix of multiply and paste.
   def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
     unless tile.type.nil?
       unless tile.color.nil?
-        asset = assets.tiles[tile.type]["base"].map {|p, x, y| p.multiply(tile.color.as(Color).to_scrgba)}
+        color = tile.color.as(Color).to_scrgba
+        canvas.paste_and_tint(@assets.tiles[tile.type]["base"], position.x, position.y, color)
       else
-        asset = assets.tiles[tile.type]["base"]
+        canvas.paste(@assets.tiles[tile.type]["base"], position.x, position.y)
       end
-      canvas.paste(asset, position.x, position.y)
     end
   end
 
   def draw_block(canvas : StumpyCore::Canvas, block : Block, position : Vector2)
     unless block.type.nil?
       unless block.color.nil?
-        asset = @assets.blocks[block.type]["base"].map {|p, x, y| p.multiply(block.color.as(Color).to_scrgba)}
+        color = block.color.as(Color).to_scrgba
+        canvas.paste_and_tint(@assets.blocks[block.type]["base"], position.x, position.y, color)
       else
-        asset = @assets.blocks[block.type]["base"]
+        canvas.paste(@assets.blocks[block.type]["base"], position.x, position.y)
       end
-      canvas.paste(asset, position.x, position.y)
     end
   end
 
@@ -143,12 +147,12 @@ module PNGRender
   end
 
   def draw_world(filename : String)
-    #TODO:  Write 
+    #TODO:  Write
     image_bounds = calculate_image_bounds
     # TODO: ZOOM
     #   To zoom, use stumpy_png to zoom the canvas perfectly using the magnification provided.
     canvas = StumpyPNG::Canvas.new(image_bounds[:width], image_bounds[:height])
-
+    
     draw_tiles(canvas)
     draw_blocks(canvas)
     StumpyPNG.write(canvas, filename)

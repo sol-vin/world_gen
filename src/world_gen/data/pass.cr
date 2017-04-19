@@ -5,7 +5,7 @@ require "./tile"
 abstract class Pass
   alias TileProc = Proc(World, Tile, Int32, Int32, (String | Color | Nil))
   alias BlockProc = Proc(World, Block, Int32, Int32, Int32, (String | Color | Nil))
-
+  
   def initialize(@world, *args)
     @tile_procs = {} of Symbol => TileProc
     @block_procs = {} of Symbol => BlockProc
@@ -13,23 +13,23 @@ abstract class Pass
     define_tile(:type) do |world, last_tile, x, y|
       nil
     end
-
+    
     define_tile(:color) do |world, last_tile, x, y|
       nil
     end
-
+    
     define_tile(:rotation) do |world, last_tile, x, y|
       nil
     end
-
+    
     define_block(:type) do |world, last_block, x, y, z|
       nil
     end
-
+    
     define_block(:color) do |world, last_block, x, y, z|
       nil
     end
-
+    
     define_block(:rotation) do |world, last_block, x, y, z|
       nil
     end
