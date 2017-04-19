@@ -9,12 +9,12 @@ require "./png_assets"
 module PNGRender
   getter assets : PNGAssets = PNGAssets.new
   
-  # Gets the real position of a tile, where it should be drawn at.
+  # Gets the position of a tile, where it should be drawn at.
   def get_tile_position(x : Int32, y : Int32) : Vector2
-    spacing = Vector2.new((assets.tile_width/2.0).round.to_i32, 
-                          (assets.tile_height/2.0).round.to_i32)
+    spacing = Vector2.new((assets.tile_width/2.0).ceil.to_i32, 
+                          (assets.tile_height/2.0).ceil.to_i32)
     min_position_x = ((x_range.size * spacing.x) + x_range.size).abs
-    min_position_y = ((assets.block_height / 2.0).round.to_i32 * (z_range.size + 1)).abs
+    min_position_y = ((assets.block_height - assets.tile_height) * (z_range.size)).abs
     Vector2.new((-x * spacing.x) + (y * spacing.x) - y + x + min_position_x - spacing.x,
                 (x * spacing.y) + (y * spacing.y) - y - x + min_position_y) 
   end
@@ -24,20 +24,20 @@ module PNGRender
     position = get_tile_position(x, y)
     #TODO: Fix this! Needs to move the block up z by aligning the bottom of the top block with the top
     #      of the bottom block, then subtract one tile height
-    position.y -= (assets.block_height / 2.0).round.to_i32 * (z + 1)
+    # Reason this works is because tile is exactly half the height of the block.
+
+    # Put the bottom of out block on top of the tile, then subtract one tile height
+    position.y -= (assets.block_height - assets.tile_height) * (z) 
     position
   end
 
   def calculate_image_bounds 
     {
       :width => get_tile_position(0, y_range.size).x + assets.tile_width,
-      :height => get_tile_position(x_range.size, y_range.size).y + assets.tile_height
+      :height => get_tile_position(x_range.size, y_range.size).y + assets.block_height 
     }
   end
 
-
-  # TODO: Fix draw_bock and draw_tile so it doesn't have to make a new Canvas just to change color
-  #       Easiest way is to make a new method on Canvas that is a mix of multiply and paste.
   def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
     unless tile.type.nil?
       unless tile.color.nil?
