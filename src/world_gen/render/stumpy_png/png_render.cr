@@ -7,8 +7,23 @@ require "./canvas"
 require "./png_assets"
 
 module PNGRender
-  getter assets : PNGAssets = PNGAssets.new
+  VIEWS = {"north_west" => "south_west", "north_east" => "north_west", "south_east" => "north_east", "south_west" => "south_east"}
   
+
+  getter assets : PNGAssets = PNGAssets.new
+  # Which direction the camera is facing currently
+  getter view : String = VIEWS.values.last
+
+    # Rotates the view counter clockwise
+  def rotate_counter_clockwise
+    @view = VIEWS[view]
+  end
+  
+  # Rotates the view clockwise
+  def rotate_clockwise : Nil
+    @view = VIEWS.invert[view] 
+  end
+
   # Gets the position of a tile, where it should be drawn at.
   def get_tile_position(x : Int32, y : Int32) : Vector2
     spacing = Vector2.new((assets.tile_width/2.0).ceil.to_i32, 
@@ -22,11 +37,6 @@ module PNGRender
   # Gets the position of a block, where it should be drawn at.
   def get_block_position(x : Int32, y : Int32, z : Int32) : Vector2
     position = get_tile_position(x, y)
-    #TODO: Fix this! Needs to move the block up z by aligning the bottom of the top block with the top
-    #      of the bottom block, then subtract one tile height
-    # Reason this works is because tile is exactly half the height of the block.
-
-    # Put the bottom of out block on top of the tile, then subtract one tile height
     position.y -= (assets.block_height - assets.tile_height) * (z) 
     position
   end
@@ -60,6 +70,8 @@ module PNGRender
     end
   end
 
+
+  # TODO: Test rotations
   def draw_tiles(canvas : StumpyCore::Canvas)
     case view
       when "south_east"
@@ -147,7 +159,6 @@ module PNGRender
   end
 
   def draw_world(filename : String)
-    #TODO:  Write
     image_bounds = calculate_image_bounds
     # TODO: ZOOM
     #   To zoom, use stumpy_png to zoom the canvas perfectly using the magnification provided.

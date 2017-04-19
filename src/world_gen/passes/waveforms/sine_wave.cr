@@ -9,7 +9,7 @@ class SineWave < InfinitePass
     super world
   end
    
-  # TODO: Add controls for length
+  # TODO: Add controls for length and phase
   def get_block_type(block, x, y, z)
     height = 0
     if axis == :x

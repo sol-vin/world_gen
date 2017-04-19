@@ -1,6 +1,5 @@
 require "./color"
 
-#TODO: Change to struct but first have to fix how set_block works in finite_world.cr
 struct Block
   property type : String?
   property rotation : String?

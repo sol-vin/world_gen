@@ -7,9 +7,6 @@ abstract class World
   # The different faces of a block
   DIRECTIONS = [:north, :south, :east, :west]
   
-  # The different camera rotations. 
-  VIEWS = {"north_west" => "south_west", "north_east" => "north_west", "south_east" => "north_east", "south_west" => "south_east"}
-  
   # The possible rotations of a block
   ROTATIONS = ["deg0", "deg90", "deg180", "deg270"]
   
@@ -25,9 +22,6 @@ abstract class World
                              :left => {:x => 1, :y => 0},
                              :right => {:x => -1, :y => 0},
                              :back => { :x => 0, :y => -1}}
-  
-  # Which direction the camera is facing currently
-  getter view : String = VIEWS.values.last
   
   # The X range of the world.
   getter x_range : Range(Int32, Int32)
@@ -48,16 +42,7 @@ abstract class World
     make_passes
   end
   
-  # Rotates the view counter clockwise
-  def rotate_counter_clockwise
-    @view = VIEWS[view]
-  end
-  
-  # Rotates the view clockwise
-  def rotate_clockwise : Nil
-    @view = Views.invert[view] 
-  end
-  
+
   # Clears the pass list
   def clear_passes : Array(Pass)
     [] of Pass

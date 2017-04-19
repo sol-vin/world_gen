@@ -3,6 +3,8 @@ require "../../data/pass"
 class SquareWave < InfinitePass
   getter axis : Symbol
   getter wave_length : UInt32 = 10
+
+  # TODO: Add controls for phase
   def initialize(world, @axis = :x)
     super world
   end
