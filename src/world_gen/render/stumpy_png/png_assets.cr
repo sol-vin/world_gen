@@ -9,10 +9,10 @@ class PNGAssets < Assets(PNGAsset)
   property tile_height : Int32 = 0
 
   protected def added_asset(name : String, asset : Asset, type : String)
-    if type == "blocks" && block_width == 0
+    if type == "blocks" && name == "block"
       @block_width = asset.tags.values.first.width
       @block_height = asset.tags.values.first.height
-    elsif type == "tiles" && tile_width == 0
+    elsif type == "tiles" && name == "tile"
       @tile_width  = asset.tags.values.first.width
       @tile_height = asset.tags.values.first.height
     end

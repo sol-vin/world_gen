@@ -1,6 +1,7 @@
 require "./block"
 require "./tile"
 
+# TODO: When crystal generic type restrictions become a feature fix this for autocasting
 abstract class Pass
   alias TileProc = Proc(World, Tile, Int32, Int32, (String | Color | Nil))
   alias BlockProc = Proc(World, Block, Int32, Int32, Int32, (String | Color | Nil))
@@ -8,6 +9,7 @@ abstract class Pass
   def initialize(@world, *args)
     @tile_procs = {} of Symbol => TileProc
     @block_procs = {} of Symbol => BlockProc
+    
     define_tile(:type) do |world, last_tile, x, y|
       nil
     end

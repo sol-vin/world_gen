@@ -7,7 +7,7 @@ class Matrix3(T)
   getter buffer : Slice(T)
   
   def initialize(@size_x : Int32, @size_y : Int32, @size_z : Int32)
-    @buffer = Slice(T).new(size_x * size_y * size_z) {yield}
+    @buffer = Slice(T).new(size_x * size_y * size_z) {yield.as(T)}
   end
 
   def [](x, y, z)

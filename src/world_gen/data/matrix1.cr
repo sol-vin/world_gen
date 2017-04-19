@@ -6,7 +6,7 @@ class Matrix1(T)
   getter buffer : Slice(T)
   
   def initialize(@size : Int32, &block)
-    @buffer = Slice(T).new(size) {yield}
+    @buffer = Slice(T).new(size) {yield.as(T)}
   end
 
   def [](x)

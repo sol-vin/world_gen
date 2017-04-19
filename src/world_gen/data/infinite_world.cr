@@ -8,9 +8,23 @@ abstract class InfiniteWorld < World
     while(i < passes.size)
       new_tile = passes[i].get_tile(last_tile, x, y)
       i += 1
-      last_tile.type = (new_tile.type ? new_tile.type : last_tile.type)
-      last_tile.color = (new_tile.color ? new_tile.color : last_tile.color)
-      last_tile.rotation = (new_tile.rotation ? new_tile.rotation : last_tile.rotation)
+      if new_tile.type == ":erase:"
+        last_tile.type = nil 
+      else
+        last_tile.type = (new_tile.type ? new_tile.type : last_tile.type) 
+      end
+
+      if new_tile.color == ":erase:"
+        last_tile.color = nil 
+      else
+        last_tile.color = (new_tile.color ? new_tile.color : last_tile.color) 
+      end
+
+      if new_tile.rotation == ":erase:"
+        last_tile.rotation = nil 
+      else
+        last_tile.rotation = (new_tile.rotation ? new_tile.rotation : last_tile.rotation) 
+      end
     end
     last_tile
   end
@@ -22,9 +36,23 @@ abstract class InfiniteWorld < World
     while(i < passes.size)
       new_block = passes[i].get_block(last_block, x, y, z)
       i += 1
-      last_block.type = (new_block.type ? new_block.type : last_block.type)
-      last_block.color = (new_block.color ? new_block.color : last_block.color)
-      last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation)
+      if new_block.type == ":erase:"
+        last_block.type = nil 
+      else
+        last_block.type = (new_block.type ? new_block.type : last_block.type) 
+      end
+
+      if new_block.color == ":erase:"
+        last_block.color = nil 
+      else
+        last_block.color = (new_block.color ? new_block.color : last_block.color) 
+      end
+
+      if new_block.rotation == ":erase:"
+        last_block.rotation = nil 
+      else
+        last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation) 
+      end
     end 
     last_block
   end

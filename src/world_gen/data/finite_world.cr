@@ -31,7 +31,7 @@ abstract class FiniteWorld < World
 
   # Clears the tile canvas
   def clear_tile_canvas : Matrix2(Tile?)
-    Matrix2(Tile?).new(x_range.size, y_range.size) {nil.as(Tile?)}
+    Matrix2(Tile?).new(x_range.size, y_range.size) {nil}
   end
 
   # Clears the blocks
@@ -41,7 +41,7 @@ abstract class FiniteWorld < World
 
   # Clears the block canvas
   def clear_block_canvas : Matrix3(Block?)
-    Matrix3(Block?).new(x_range.size, y_range.size, z_range.size) {nil.as(Block?)}
+    Matrix3(Block?).new(x_range.size, y_range.size, z_range.size) {nil}
   end
     # Merges the block_canvas with blocks, and the tile_canvas with tiles
  
@@ -91,12 +91,12 @@ abstract class FiniteWorld < World
 
   # Gets a block from the blocks array at a specified location.
   def get_block(x : Int32, y : Int32, z : Int32) : Block
-    blocks[x - x_range.begin, y - y_range.begin, z - z_range.begin]
+    @blocks[x - x_range.begin, y - y_range.begin, z - z_range.begin]
   end
 
   # Sets a block from the blocks array at a specified location.
   def set_block(x : Int32, y : Int32, z : Int32, block : Block) : Nil
-    block_canvas[x - x_range.begin, y - y_range.begin, z - z_range.begin] = block
+    @block_canvas[x - x_range.begin, y - y_range.begin, z - z_range.begin] = block
   end
 
   # Gets a tile from the tiles array at a specified location.
@@ -106,7 +106,7 @@ abstract class FiniteWorld < World
 
   # Sets a tile from the tiles array at a specified location.
   def set_tile(x : Int32, y : Int32, tile : Tile) : Nil 
-    tile_canvas[x - x_range.begin, y - y_range.begin] = tile
+    @tile_canvas[x - x_range.begin, y - y_range.begin] = tile
   end
 
   def find_block_neighbors(x : Int32, y : Int32, z : Int32)

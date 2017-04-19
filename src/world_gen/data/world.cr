@@ -1,3 +1,7 @@
+require "./pass"
+require "./tile"
+require "./block"
+
 #Class to make an isometric world.
 abstract class World
   # The different faces of a block
@@ -65,8 +69,19 @@ abstract class World
   # Abstraction for where the user makes the passes they want.
   protected abstract def make_passes
   
-  def make_pass(pass : typeof(Pass), *args)
+  def make_pass(pass : Pass.class, *args)
     passes << pass.new(self, *args)
+  end
+
+  abstract def get_tile(x : Int32, y : Int32) : Tile
+
+  # Returns all the number combinations (x, y) for every tile.
+  def each_tile(&block) : Nil
+    x_range.each do |x|
+      y_range.each do |y|
+        yield get_tile(x, y), x, y
+      end
+    end
   end
 
   abstract def get_block(x : Int32, y : Int32, z : Int32) : Block
@@ -78,17 +93,6 @@ abstract class World
         z_range.each do |z|
           yield get_block(x, y, z), x, y, z
         end
-      end
-    end
-  end
-
-  abstract def get_tile(x : Int32, y : Int32) : Tile
-
-  # Returns all the number combinations (x, y) for every tile.
-  def each_tile(&block) : Nil
-    x_range.each do |x|
-      y_range.each do |y|
-        yield get_tile(x, y), x, y
       end
     end
   end

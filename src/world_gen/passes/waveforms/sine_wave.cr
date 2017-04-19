@@ -3,6 +3,7 @@ require "../../data/pass"
 class SineWave < InfinitePass
   TWO_PI = 2 * 3.141592
   getter axis : Symbol
+  property block_type : String = "block"
 
   def initialize(world, @axis = :x)
     super world
@@ -26,7 +27,7 @@ class SineWave < InfinitePass
     end
 
     if z < height
-      "block"
+      block_type
     else
       nil
     end
