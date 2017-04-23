@@ -3,8 +3,8 @@ require "./tile"
 
 # TODO: When crystal generic type restrictions become a feature fix this for autocasting
 abstract class Pass
-  alias TileProc = Proc(World, Tile, Int32, Int32, (String | Color | Nil))
-  alias BlockProc = Proc(World, Block, Int32, Int32, Int32, (String | Color | Nil))
+  alias TileProc = Proc(World, Tile, Int32, Int32, String?)
+  alias BlockProc = Proc(World, Block, Int32, Int32, Int32, String?)
   
   def initialize(@world, **args)
     @tile_procs = {} of Symbol => TileProc
@@ -62,37 +62,37 @@ abstract class Pass
   end
 
   def get_tile_type(last_tile : Tile, x : Int32, y : Int32) : String?
-    @tile_procs[:type].call(world, last_tile, x, y).as(String?)
+    @tile_procs[:type].call(world, last_tile, x, y)
   end
 
   # Gets a tile rotation. If this returns ```nil```, this option will not get changed on a worlds tile 
   def get_tile_rotation(last_tile : Tile, x : Int32, y : Int32) : String?
-    @tile_procs[:rotation].call(world, last_tile, x, y).as(String?)
+    @tile_procs[:rotation].call(world, last_tile, x, y)
   end
   # Gets a tile color. If this returns ```nil```, this option will not get changed on a worlds tile 
-  def get_tile_color(last_tile : Tile, x : Int32, y : Int32) : Color? 
-    @tile_procs[:color].call(world, last_tile, x, y).as(Color?)
+  def get_tile_color(last_tile : Tile, x : Int32, y : Int32) : String? 
+    @tile_procs[:color].call(world, last_tile, x, y)
   end
 
   # Gets a block type. If this returns ```nil```, this option will not get changed on a worlds block 
   def get_block_type(last_block : Block, x : Int32, y : Int32, z : Int32) : String?
-    @block_procs[:type].call(world, last_block, x, y, z).as(String?)
+    @block_procs[:type].call(world, last_block, x, y, z)
   end
 
   # Gets a block rotation. If this returns ```nil```, this option will not get changed on a worlds block 
   def get_block_rotation(last_block : Block, x : Int32, y : Int32, z : Int32) : String?
-    @block_procs[:rotation].call(world, last_block, x, y, z).as(String?)
+    @block_procs[:rotation].call(world, last_block, x, y, z)
   end
 
   # Gets a block color. If this returns ```nil```, this option will not get changed on a worlds block
-  def get_block_color(last_block : Block, x : Int32, y : Int32, z : Int32) : Color?
-    @block_procs[:color].call(world, last_block, x, y, z).as(Color?)
+  def get_block_color(last_block : Block, x : Int32, y : Int32, z : Int32) : String?
+    @block_procs[:color].call(world, last_block, x, y, z)
   end
 end
 
 class FinitePass < Pass
-  alias TileProc = Proc(FiniteWorld, Tile, Int32, Int32, (String | Color | Nil))
-  alias BlockProc = Proc(FiniteWorld, Block, Int32, Int32, Int32, (String | Color | Nil))
+  alias TileProc = Proc(FiniteWorld, Tile, Int32, Int32, String?)
+  alias BlockProc = Proc(FiniteWorld, Block, Int32, Int32, Int32, String?)
   getter world : FiniteWorld
 end
 

@@ -3,7 +3,7 @@ require "yaml"
 
 require "../../data/*"
 
-require "./color"
+require "./rgba"
 require "./canvas"
 require "./png_assets"
 
@@ -62,7 +62,7 @@ module PNGRender
       
       layers.each do |layer_name, layer_info|
         unless tile.color.nil?
-          color = tile.color.as(Color).to_scrgba
+          color = StumpyCore::RGBA.from_hex9(tile.color.as(String))          
           canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
         else
           canvas.paste(asset[layer_name.to_s], position.x, position.y)
@@ -84,7 +84,7 @@ module PNGRender
       end
       layers.each do |layer_name, layer_info|
         unless block.color.nil?
-          color = block.color.as(Color).to_scrgba
+          color = StumpyCore::RGBA.from_hex9(block.color.as(String))
           canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
         else
           canvas.paste(asset[layer_name.to_s], position.x, position.y)

@@ -1,9 +1,7 @@
-require "./color"
-
 struct Tile
   property type : String?
   property rotation : String?
-  property color : Color?
+  property color : String?
 
   def initialize(@type = nil, @rotation = nil, @color = nil)
   end

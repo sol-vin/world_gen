@@ -13,7 +13,7 @@ class ExampleInfiniteWorld < InfiniteWorld
   end
   
   protected def make_passes
-    make_pass SolidOn
+    make_pass SolidOn, block_type: "block", tile_type: "tile"
     make_pass DebugColor
   end
 end
