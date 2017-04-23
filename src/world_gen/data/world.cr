@@ -5,10 +5,10 @@ require "./block"
 #Class to make an isometric world.
 abstract class World
   # The different faces of a block
-  DIRECTIONS = [:north, :south, :east, :west]
+  DIRECTIONS = ["north", "south", "east", "west"]
   
   # The possible rotations of a block
-  ROTATIONS = ["deg0", "deg90", "deg180", "deg270"]
+  ROTATIONS = ["deg_0", "deg_90", "deg_180", "deg_270"]
   
   # The potential neighbors of a block
   POSSIBLE_BLOCK_NEIGHBORS = {:front => {:x => 0, :y => 1, :z => 0},
@@ -54,8 +54,8 @@ abstract class World
   # Abstraction for where the user makes the passes they want.
   protected abstract def make_passes
   
-  def make_pass(pass : Pass.class, *args)
-    passes << pass.new(self, *args)
+  def make_pass(pass : Pass.class, **args)
+    passes << pass.new(self, **args)
   end
   
   abstract def get_tile(x : Int32, y : Int32) : Tile

@@ -1,4 +1,5 @@
 require "stumpy_png"
+require "yaml"
 
 require "../../data/*"
 
@@ -9,7 +10,6 @@ require "./png_assets"
 module PNGRender
   VIEWS = {"north_west" => "south_west", "north_east" => "north_west", "south_east" => "north_east", "south_west" => "south_east"}
   
-
   getter assets : PNGAssets = PNGAssets.new
   # Which direction the camera is facing currently
   getter view : String = VIEWS.values.last
@@ -20,7 +20,7 @@ module PNGRender
   end
   
   # Rotates the view clockwise
-  def rotate_clockwise : Nil
+  def rotate_clockwise
     @view = VIEWS.invert[view] 
   end
 
@@ -37,7 +37,7 @@ module PNGRender
   # Gets the position of a block, where it should be drawn at.
   def get_block_position(x : Int32, y : Int32, z : Int32) : Vector2
     position = get_tile_position(x, y)
-    position.y -= (assets.block_height - assets.tile_height) * (z) 
+    position.y -= (assets.block_height - assets.tile_height) * z 
     position
   end
 
@@ -49,29 +49,50 @@ module PNGRender
   end
 
   def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
-    unless tile.type.nil?
-      unless tile.color.nil?
-        color = tile.color.as(Color).to_scrgba
-        canvas.paste_and_tint(@assets.tiles[tile.type]["base"], position.x, position.y, color)
+    if tile.type
+      asset = @assets.tiles[tile.type]
+      layers = YAML.parse("blank: []")
+      if tile.rotation && asset.config["views"][view][tile.rotation.as(String)]?
+        layers = asset.config["views"][view][tile.rotation.as(String)]
+      elsif asset.config["views"][view]["none"]?
+        layers = asset.config["views"][view]["none"]
       else
-        canvas.paste(@assets.tiles[tile.type]["base"], position.x, position.y)
+        raise "asset did not have any configuration for rotation #{tile.type} #{tile.rotation}"
+      end
+      
+      layers.each do |layer_name, layer_info|
+        unless tile.color.nil?
+          color = tile.color.as(Color).to_scrgba
+          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
+        else
+          canvas.paste(asset[layer_name.to_s], position.x, position.y)
+        end        
       end
     end
   end
 
   def draw_block(canvas : StumpyCore::Canvas, block : Block, position : Vector2)
-    unless block.type.nil?
-      unless block.color.nil?
-        color = block.color.as(Color).to_scrgba
-        canvas.paste_and_tint(@assets.blocks[block.type]["base"], position.x, position.y, color)
+    if block.type
+      asset = @assets.blocks[block.type]
+      layers = YAML.parse("blank: []")
+      if block.rotation && asset.config["views"][view][block.rotation.as(String)]?
+        layers = asset.config["views"][view][block.rotation.as(String)]
+      elsif asset.config["views"][view]["none"]?
+        layers = asset.config["views"][view]["none"]
       else
-        canvas.paste(@assets.blocks[block.type]["base"], position.x, position.y)
+        raise "asset did not have any configuration for rotation #{block.type} #{block.rotation}"
+      end
+      layers.each do |layer_name, layer_info|
+        unless block.color.nil?
+          color = block.color.as(Color).to_scrgba
+          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
+        else
+          canvas.paste(asset[layer_name.to_s], position.x, position.y)
+        end        
       end
     end
   end
 
-
-  # TODO: Test rotations
   def draw_tiles(canvas : StumpyCore::Canvas)
     case view
       when "south_east"
@@ -107,10 +128,10 @@ module PNGRender
           end
         end
       else
-        raise Exception.new("view was wrong")  
+        raise "view was wrong"
     end
   end
-
+  
   def draw_blocks(canvas : StumpyCore::Canvas)
     case view
       when "south_east"
@@ -154,7 +175,7 @@ module PNGRender
           end
         end
       else
-        raise Exception.new("view was wrong") 
+        raise "view was wrong #{view}"
     end
   end
 

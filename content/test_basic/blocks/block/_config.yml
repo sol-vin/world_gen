@@ -1,17 +1,13 @@
-collections:
-  - blocks
-  - basic
-
 views:
   north_west:
-    all:
+    none:
       base: none
   north_east:
-    all:
+    none:
       base: none
   south_west:
-    all:
+    none:
       base: none
   south_east:
-    all:
+    none:
       base: none

@@ -57,9 +57,9 @@ abstract class InfiniteWorld < World
     last_block
   end
 
-  def make_pass(pass, *args)
+  def make_pass(pass, **args)
     if pass.is_a?(typeof(InfinitePass))
-      super pass, *args
+      super pass, **args
     else
       raise Exception.new("CANNOT ADD A FINITEPASS TO AN INFINITE WORLD #{pass}")
     end

@@ -6,7 +6,7 @@ abstract class Pass
   alias TileProc = Proc(World, Tile, Int32, Int32, (String | Color | Nil))
   alias BlockProc = Proc(World, Block, Int32, Int32, Int32, (String | Color | Nil))
   
-  def initialize(@world, *args)
+  def initialize(@world, **args)
     @tile_procs = {} of Symbol => TileProc
     @block_procs = {} of Symbol => BlockProc
     

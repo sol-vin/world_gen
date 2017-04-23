@@ -1,1 +1,1 @@
-require "./world_gen/*"
+require "./world_gen/**"
