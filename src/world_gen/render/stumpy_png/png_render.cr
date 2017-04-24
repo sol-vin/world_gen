@@ -48,7 +48,7 @@ module PNGRender
     }
   end
 
-  def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
+  private def get_layer_info(tile : Tile) : YAML::Any?
     if tile.type
       asset = @assets.tiles[tile.type]
       layers = YAML.parse("blank: []")
@@ -59,27 +59,39 @@ module PNGRender
       else
         raise "asset did not have any configuration for rotation #{tile.type} #{tile.rotation}"
       end
+      return layers
+    end
+  end
 
-      #TODO: Add YAML layer type copying
-      #      EX: 
-      #          block_type.layer_name: layer_info
-      
+  #TODO: Add flip_h
+  private def draw_tile_layer(canvas : StumpyCore::Canvas , tile_type : String, tile_color : String?, layer : String, layer_info : YAML::Any, position : Vector2)
+    asset = assets.tiles[tile_type][layer]
+    if layer_info != "none" && layer_info["color"]?
+      color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
+      canvas.paste_and_tint(asset, position.x, position.y, color)          
+    elsif tile_color
+      color = StumpyCore::RGBA.from_hex9(tile_color.as(String))
+      canvas.paste_and_tint(asset, position.x, position.y, color)          
+    else
+      canvas.paste(asset, position.x, position.y)
+    end
+  end
+
+  def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
+    if tile.type
+      layers = get_layer_info(tile).as(YAML::Any)
 
       layers.each do |layer_name, layer_info|
-        if layer_info != "none" && layer_info["color"]?
-          color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
-          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)          
-        elsif tile.color
-          color = StumpyCore::RGBA.from_hex9(tile.color.as(String))
-          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)          
+        if layer_name.to_s.includes?('.')
+          draw_tile_layer(canvas, layer_name.to_s.split('.')[0], tile.color, layer_name.to_s.split('.')[1], layer_info, position)
         else
-          canvas.paste(asset[layer_name.to_s], position.x, position.y)
-        end        
+          draw_tile_layer(canvas, tile.type.as(String), tile.color, layer_name.to_s, layer_info, position)
+        end
       end
     end
   end
 
-  def draw_block(canvas : StumpyCore::Canvas, block : Block, position : Vector2)
+  private def get_layer_info(block : Block) : YAML::Any?
     if block.type
       asset = @assets.blocks[block.type]
       layers = YAML.parse("blank: []")
@@ -90,16 +102,34 @@ module PNGRender
       else
         raise "asset did not have any configuration for rotation #{block.type} #{block.rotation}"
       end
+      return layers
+    end
+  end
+
+  private def draw_block_layer(canvas : StumpyCore::Canvas , block_type : String, block_color : String?, layer : String, layer_info : YAML::Any, position : Vector2)
+    asset = assets.blocks[block_type][layer]
+    if layer_info != "none" && layer_info["color"]?
+      color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
+      canvas.paste_and_tint(asset, position.x, position.y, color)          
+    elsif block_color
+      color = StumpyCore::RGBA.from_hex9(block_color.as(String))
+      canvas.paste_and_tint(asset, position.x, position.y, color)          
+    else
+      canvas.paste(asset, position.x, position.y)
+    end
+  end
+
+
+  def draw_block(canvas : StumpyCore::Canvas, block : Block, position : Vector2)
+    if block.type
+      layers = get_layer_info(block).as(YAML::Any)
+
       layers.each do |layer_name, layer_info|
-        if layer_info != "none" && layer_info["color"]?
-          color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
-          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)          
-        elsif block.color
-          color = StumpyCore::RGBA.from_hex9(block.color.as(String))
-          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
+        if layer_name.to_s.includes?('.')
+          draw_block_layer(canvas, layer_name.to_s.split('.')[0], block.color, layer_name.to_s.split('.')[1], layer_info, position)
         else
-          canvas.paste(asset[layer_name.to_s], position.x, position.y)
-        end        
+          draw_block_layer(canvas, block.type.as(String), block.color, layer_name.to_s, layer_info, position)
+        end
       end
     end
   end

@@ -1,5 +1,6 @@
 require "./asset"
 
+# TODO: Maybe Atomic(T)'s generic type restriction macro would be good here?
 class Assets(T)
   getter blocks : Hash(String, T)
   getter tiles : Hash(String, T)
