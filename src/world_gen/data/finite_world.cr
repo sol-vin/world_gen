@@ -19,7 +19,7 @@ abstract class FiniteWorld < World
     @tile_canvas = clear_tile_canvas
     @block_canvas = clear_block_canvas
     
-    super
+    super x_range, y_range, z_range
     
     make_world
   end

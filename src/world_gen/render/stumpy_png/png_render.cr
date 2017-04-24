@@ -59,11 +59,19 @@ module PNGRender
       else
         raise "asset did not have any configuration for rotation #{tile.type} #{tile.rotation}"
       end
+
+      #TODO: Add YAML layer type copying
+      #      EX: 
+      #          block_type.layer_name: layer_info
       
+
       layers.each do |layer_name, layer_info|
-        unless tile.color.nil?
-          color = StumpyCore::RGBA.from_hex9(tile.color.as(String))          
-          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
+        if layer_info != "none" && layer_info["color"]?
+          color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
+          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)          
+        elsif tile.color
+          color = StumpyCore::RGBA.from_hex9(tile.color.as(String))
+          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)          
         else
           canvas.paste(asset[layer_name.to_s], position.x, position.y)
         end        
@@ -83,7 +91,10 @@ module PNGRender
         raise "asset did not have any configuration for rotation #{block.type} #{block.rotation}"
       end
       layers.each do |layer_name, layer_info|
-        unless block.color.nil?
+        if layer_info != "none" && layer_info["color"]?
+          color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
+          canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)          
+        elsif block.color
           color = StumpyCore::RGBA.from_hex9(block.color.as(String))
           canvas.paste_and_tint(asset[layer_name.to_s], position.x, position.y, color)
         else
