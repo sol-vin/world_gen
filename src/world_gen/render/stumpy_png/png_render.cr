@@ -77,7 +77,7 @@ module PNGRender
             else
               raise "data was not Data I guess IDK."
             end
-    has_layer_color = layer_info != "none" && layer_info["color"]? && layer_info["color"]? != "none"
+    has_layer_color = layer_info != "none" && layer_info["color"]?
     has_layer_flip_h = layer_info != "none" && layer_info["flip_h"]? == "true"
     has_data_flip_h = data.flip_h == "true"
     flip_h =  has_data_flip_h ^ has_layer_flip_h
@@ -86,7 +86,11 @@ module PNGRender
       canvas.paste_and_tint(asset, position.x, position.y, color)
     elsif has_layer_color && flip_h
       color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
-      canvas.paste_and_flip_h_and_tint(asset, position.x, position.y, color)           
+      canvas.paste_and_flip_h_and_tint(asset, position.x, position.y, color)     
+    elsif has_layer_color && layer_info["color"]? == "none" && flip_h
+      canvas.paste_and_flip_h(asset, position.x, position.y)
+    elsif has_layer_color && layer_info["color"]? == "none" && !flip_h
+      canvas.paste(asset, position.x, position.y)
     elsif data.color && !flip_h
       color = StumpyCore::RGBA.from_hex9(data.color.as(String))
       canvas.paste_and_tint(asset, position.x, position.y, color) 
