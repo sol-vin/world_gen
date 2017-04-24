@@ -1,4 +1,4 @@
-require "../../data/assets"
+require "../../assets"
 require "./png_asset"
 
 class PNGAssets < Assets(PNGAsset)

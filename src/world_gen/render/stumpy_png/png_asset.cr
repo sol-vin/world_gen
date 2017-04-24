@@ -2,7 +2,7 @@ require "stumpy_core"
 require "stumpy_png"
 require "yaml"
 
-require "../../data/asset"
+require "../../asset"
 
 class PNGAsset < Asset(StumpyCore::Canvas)
   getter config : YAML::Any
