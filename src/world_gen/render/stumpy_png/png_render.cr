@@ -37,7 +37,7 @@ module PNGRender
   # Gets the position of a block, where it should be drawn at.
   def get_block_position(x : Int32, y : Int32, z : Int32) : Vector2
     position = get_tile_position(x, y)
-    position.y -= (assets.block_height - assets.tile_height) * z 
+    position.y -= (assets.block_height - assets.tile_height) * (z+1)
     position
   end
 
