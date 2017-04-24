@@ -47,88 +47,73 @@ module PNGRender
       :height => get_tile_position(x_range.size, y_range.size).y + assets.block_height 
     }
   end
-
-  private def get_layer_info(tile : Tile) : YAML::Any?
-    if tile.type
-      asset = @assets.tiles[tile.type]
+  
+  private def get_layer_info(data : Data) : YAML::Any?
+    if data.type
+      asset = if data.is_a?(Tile) 
+              assets.tiles[data.type]
+            elsif data.is_a?(Block)
+              assets.blocks[data.type]
+            else
+              raise "data was not Data I guess IDK."
+            end
       layers = YAML.parse("blank: []")
-      if tile.rotation && asset.config["views"][view][tile.rotation.as(String)]?
-        layers = asset.config["views"][view][tile.rotation.as(String)]
+      if data.rotation && asset.config["views"][view][data.rotation.as(String)]?
+        layers = asset.config["views"][view][data.rotation.as(String)]
       elsif asset.config["views"][view]["none"]?
         layers = asset.config["views"][view]["none"]
       else
-        raise "asset did not have any configuration for rotation #{tile.type} #{tile.rotation}"
+        raise "asset did not have any configuration for rotation #{data.type} #{data.rotation}"
       end
       return layers
     end
   end
 
-  #TODO: Add flip_h
-  private def draw_tile_layer(canvas : StumpyCore::Canvas , tile_type : String, tile_color : String?, layer : String, layer_info : YAML::Any, position : Vector2)
-    asset = assets.tiles[tile_type][layer]
-    if layer_info != "none" && layer_info["color"]?
+  private def draw_layer(canvas : StumpyCore::Canvas , data : Data, layer : String, layer_info : YAML::Any, position : Vector2)
+    asset = if data.is_a?(Tile) 
+              assets.tiles[data.type][layer]
+            elsif data.is_a?(Block)
+              assets.blocks[data.type][layer]
+            else
+              raise "data was not Data I guess IDK."
+            end
+    has_layer_color = layer_info != "none" && layer_info["color"]?
+    has_layer_flip_h = layer_info != "none" && layer_info["flip_h"]? == "true"
+    has_data_flip_h = data.flip_h == "true"
+    flip_h =  has_data_flip_h || has_layer_flip_h
+    if has_layer_color && !flip_h
       color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
-      canvas.paste_and_tint(asset, position.x, position.y, color)          
-    elsif tile_color
-      color = StumpyCore::RGBA.from_hex9(tile_color.as(String))
-      canvas.paste_and_tint(asset, position.x, position.y, color)          
-    else
-      canvas.paste(asset, position.x, position.y)
-    end
-  end
-
-  def draw_tile(canvas : StumpyCore::Canvas, tile : Tile, position : Vector2)
-    if tile.type
-      layers = get_layer_info(tile).as(YAML::Any)
-
-      layers.each do |layer_name, layer_info|
-        if layer_name.to_s.includes?('.')
-          draw_tile_layer(canvas, layer_name.to_s.split('.')[0], tile.color, layer_name.to_s.split('.')[1], layer_info, position)
-        else
-          draw_tile_layer(canvas, tile.type.as(String), tile.color, layer_name.to_s, layer_info, position)
-        end
-      end
-    end
-  end
-
-  private def get_layer_info(block : Block) : YAML::Any?
-    if block.type
-      asset = @assets.blocks[block.type]
-      layers = YAML.parse("blank: []")
-      if block.rotation && asset.config["views"][view][block.rotation.as(String)]?
-        layers = asset.config["views"][view][block.rotation.as(String)]
-      elsif asset.config["views"][view]["none"]?
-        layers = asset.config["views"][view]["none"]
-      else
-        raise "asset did not have any configuration for rotation #{block.type} #{block.rotation}"
-      end
-      return layers
-    end
-  end
-
-  private def draw_block_layer(canvas : StumpyCore::Canvas , block_type : String, block_color : String?, layer : String, layer_info : YAML::Any, position : Vector2)
-    asset = assets.blocks[block_type][layer]
-    if layer_info != "none" && layer_info["color"]?
+      canvas.paste_and_tint(asset, position.x, position.y, color)
+    elsif has_layer_color && flip_h
       color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
-      canvas.paste_and_tint(asset, position.x, position.y, color)          
-    elsif block_color
-      color = StumpyCore::RGBA.from_hex9(block_color.as(String))
-      canvas.paste_and_tint(asset, position.x, position.y, color)          
+      canvas.paste_and_flip_h_and_tint(asset, position.x, position.y, color)           
+    elsif data.color && !flip_h
+      color = StumpyCore::RGBA.from_hex9(data.color.as(String))
+      canvas.paste_and_tint(asset, position.x, position.y, color) 
+    elsif data.color && flip_h
+      color = StumpyCore::RGBA.from_hex9(data.color.as(String))
+      canvas.paste_and_flip_h_and_tint(asset, position.x, position.y, color)
+    elsif flip_h
+      canvas.paste_and_flip_h(asset, position.x, position.y)
     else
       canvas.paste(asset, position.x, position.y)
     end
   end
 
 
-  def draw_block(canvas : StumpyCore::Canvas, block : Block, position : Vector2)
-    if block.type
-      layers = get_layer_info(block).as(YAML::Any)
+  def draw_data(canvas : StumpyCore::Canvas, data : Data, position : Vector2)
+    if data.type
+      layers = get_layer_info(data).as(YAML::Any)
 
       layers.each do |layer_name, layer_info|
+        # if the layer_name contains a . it is most likely 
+        # trying to clone another types layer (ex: block.base)
         if layer_name.to_s.includes?('.')
-          draw_block_layer(canvas, layer_name.to_s.split('.')[0], block.color, layer_name.to_s.split('.')[1], layer_info, position)
+          new_data = data
+          data.type = layer_name.to_s.split('.')[0]
+          draw_layer(canvas, data, layer_name.to_s.split('.')[1], layer_info, position)
         else
-          draw_block_layer(canvas, block.type.as(String), block.color, layer_name.to_s, layer_info, position)
+          draw_layer(canvas, data, layer_name.to_s, layer_info, position)
         end
       end
     end
@@ -141,7 +126,7 @@ module PNGRender
           x_range.each do |x|
             tile = get_tile(x,y)
             position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_tile(canvas, tile, position)
+            draw_data(canvas, tile, position)
           end
         end
       when "south_west"
@@ -149,7 +134,7 @@ module PNGRender
           y_range.each do |x|
             tile = get_tile(x_range.size - 1 - y, x)
             position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_tile(canvas, tile, position)
+            draw_data(canvas, tile, position)
           end
         end
       when "north_west"
@@ -157,7 +142,7 @@ module PNGRender
           x_range.each do |x|
             tile = get_tile(x_range.size - 1 - x, y_range.size - 1 - y)
             position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_tile(canvas, tile, position)
+            draw_data(canvas, tile, position)
           end
         end
       when "north_east"
@@ -165,7 +150,7 @@ module PNGRender
           y_range.each do |x|
             tile = get_tile(y, y_range.size - 1 - x)
             position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_tile(canvas, tile, position)
+            draw_data(canvas, tile, position)
           end
         end
       else
@@ -181,7 +166,7 @@ module PNGRender
             z_range.each do |z|
               block = get_block(x, y, z)
               position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_block(canvas, block, position)
+              draw_data(canvas, block, position)
             end
           end
         end
@@ -191,7 +176,7 @@ module PNGRender
             z_range.each do |z|
               block = get_block(x_range.size - 1 - y, x, z)
               position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_block(canvas, block, position)
+              draw_data(canvas, block, position)
             end
           end
         end
@@ -201,7 +186,7 @@ module PNGRender
             z_range.each do |z|
               block = get_block(x_range.size - 1 - x, x_range.size - 1 - y, z)
               position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_block(canvas, block, position)
+              draw_data(canvas, block, position)
             end
           end
         end
@@ -211,7 +196,7 @@ module PNGRender
             z_range.each do |z|
               block = get_block(y, x_range.size - 1 - x, z)
               position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_block(canvas, block, position)
+              draw_data(canvas, block, position)
             end
           end
         end
