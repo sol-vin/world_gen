@@ -80,7 +80,7 @@ module PNGRender
     has_layer_color = layer_info != "none" && layer_info["color"]?
     has_layer_flip_h = layer_info != "none" && layer_info["flip_h"]? == "true"
     has_data_flip_h = data.flip_h == "true"
-    flip_h =  has_data_flip_h || has_layer_flip_h
+    flip_h =  has_data_flip_h ^ has_layer_flip_h
     if has_layer_color && !flip_h
       color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
       canvas.paste_and_tint(asset, position.x, position.y, color)
@@ -110,8 +110,8 @@ module PNGRender
         # trying to clone another types layer (ex: block.base)
         if layer_name.to_s.includes?('.')
           new_data = data
-          data.type = layer_name.to_s.split('.')[0]
-          draw_layer(canvas, data, layer_name.to_s.split('.')[1], layer_info, position)
+          new_data.type = layer_name.to_s.split('.')[0]
+          draw_layer(canvas, new_data, layer_name.to_s.split('.')[1], layer_info, position)
         else
           draw_layer(canvas, data, layer_name.to_s, layer_info, position)
         end
