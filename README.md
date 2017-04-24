@@ -18,111 +18,80 @@ dependencies:
 
 ## Usage
 
-### InfiniteWorld and FiniteWorld
-There are two types of worlds available to you, InfiniteWorld and FiniteWorld. InfiniteWorld is a world type where blocks can have no knowledge of it's neighbors (while this isn't entirely true, it's the standard you should hold for yourself when making InfiniteWorlds as accessing neighbors can cause infinite recursion.). FiniteWorlds are built with a backing 3D array of blocks, allowing you to get blocks from the set you are generating.
+### World and FiniteWorld
+
+There are two types of worlds available to you, `World` and `FiniteWorld`. `World` is a world type where blocks can have no knowledge of it's neighbors (while this isn't entirely true, it's the standard you should hold for yourself when making `World`s as accessing neighbors can cause infinite recursion.). `FiniteWorld`s are built with a backing 3D array of blocks, allowing you to get blocks from the set you are generating.
 
 ### Passes
-Along with the two types of worlds, there are two types of Passes, InfinitePass and FinitePass. A FiniteWorld can use both InfinitePass and FinitePass where as an InfiniteWorld can only use an InfinitePass. Passes are used to describe how blocks are generated, and contain methods that are overridable or changable. 
+
+Passes are used to describe how blocks are generated, and contain methods that are overridable or changable. 
 
 #### Adding passes
 
-The Class way.
-
 ```crystal
-require "../data/infinite_world"
-require "../data/pass"
-require "../passes/solid_on"
-require "../passes/debug/debug_color"
+require "world_gen"
 
-class ExampleInfiniteWorld < InfiniteWorld
+class ExampleWorld < World
+  
   def initialize(x_range, y_range, z_range)
     super x_range, y_range, z_range
-    assets.open_content "./content/test_basic/"
+    assets.open_content "./content/basic/"
   end
-
-  # override this in your World class to layer the passes you want.
+  
   protected def make_passes
-    make_pass SolidOn   
-    make_pass DebugColor
-  end
-end
-```
-
-The Proc way
-
-```crystal
-require "../data/infinite_world"
-require "../data/proc_pass"
-require "../passes/solid_on"
-require "../passes/debug/debug_color"
-
-class ExampleInfiniteWorld < InfiniteWorld
-  def initialize(x_range, y_range, z_range)
-    super x_range, y_range, z_range
-    assets.open_content "./content/test_basic/"
-  end
-
-  # override this in your World class to layer the passes you want.
-  protected def make_passes
-    pass = InfinitePass.new
-    pass.define_tile(:type) do |world, last_tile, x, y|
-      "tile"
-    end   
-
-    pass.define_block(:type) do |world, last_block, x, y, z|
-      "block"
-    end
+    pass = Pass.new
     passes << pass
 
-    make_pass DebugColor
+    pass.define_block(:type) {|_, _, _, _| "block"}
+    pass.define_block(:color) do |_, x, y, z|
+      r = (UInt8::MAX * (x.to_f/x_range.size)).to_u8
+      g = (UInt8::MAX * (y.to_f/y_range.size)).to_u8
+      b = (UInt8::MAX * (z.to_f/z_range.size)).to_u8
+      a = UInt8::MAX
+
+      r_s = r.to_s(16)
+      g_s = g.to_s(16)
+      b_s = b.to_s(16)
+      a_s = a.to_s(16)
+
+      if r_s.size == 1
+        r_s = r_s.insert(0, "0") 
+      end
+
+      if g_s.size == 1
+        g_s = g_s.insert(0, "0") 
+      end
+
+      if b_s.size == 1
+        b_s = b_s.insert(0, "0") 
+      end
+
+      if a_s.size == 1
+        a_s = a_s.insert(0, "0") 
+      end
+      "#{r_s}#{g_s}#{b_s}#{a_s}"
+    end
   end
 end
 ```
 
-#### Making your own passes
-Either override the methods get_tile_* and get_block_* after inheriting a pass or use a FinitePass or InfinitePass to inline define during make_passes.
-
-```crystal
-require "../../data/pass"
-
-class SolidOn < InfinitePass
-  property block_type : String = "block"
-  property tile_type : String = "tile"
-
-  def get_block_type(last_block : Block, x : Int32, y : Int32, z : Int32) : String?
-    block_type
-  end
-
-  def get_tile_type(last_tile : Tile, x : Int32, y : Int32, z : Int32) : String?
-    tile_type
-  end
-end
-```
-
-###Rendering
+### Rendering
 
 Currently there is only one renderer, which renders the world in an isometric format to a PNG. However, there is full support for adding different kinds of renderers in the form of modules. 
 
 ```crystal
-require "../data/infinite_world"
-require "../data/pass"
-require "../render/stumpy_png/png_render"
-require "../passes/solid_on"
-require "../passes/debug/debug_color"
+require "./example_world"
+require "world_gen/render/stumpy_png/png_render"
 
-class ExampleInfiniteWorld < InfiniteWorld
+class PNGExampleWorld < ExampleWorld
   include PNGRender
-  def initialize(x_range, y_range, z_range)
-    super x_range, y_range, z_range
-    assets.open_content "./content/test_basic/"
-  end
-
-  # override this in your World class to layer the passes you want.
-  protected def make_passes
-    make_pass SolidOn   
-    make_pass DebugColor
-  end
 end
+```
+
+Then
+
+```crystal
+PNGExampleWorld.new((0..10), (0..10), (0..10)).draw_world("world.png")
 ```
 
 ## Development
