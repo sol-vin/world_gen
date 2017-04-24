@@ -1,5 +1,4 @@
-require "./block"
-require "./tile"
+require "./data"
 
 class Pass
   alias TileProc = Proc(Tile, Int32, Int32, String?)

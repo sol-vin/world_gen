@@ -1,4 +1,4 @@
-struct Data
+abstract struct Data
   property type : String?
   property rotation : String?
   property color : String?
