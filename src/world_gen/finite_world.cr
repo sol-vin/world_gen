@@ -53,6 +53,7 @@ abstract class FiniteWorld < World
           tiles[x, y].type = tile.type unless tile.type.nil?
           tiles[x, y].rotation = tile.rotation unless tile.rotation.nil?
           tiles[x, y].color = tile.color unless tile.color.nil?
+          tiles[x, y].flip_h = tile.flip_h unless tile.flip_h.nil?
         end
       end
     end
@@ -65,6 +66,7 @@ abstract class FiniteWorld < World
             blocks[x, y, z].type = block.type unless block.type.nil?
             blocks[x, y, z].rotation = block.rotation unless block.rotation.nil?
             blocks[x, y, z].color = block.color unless block.color.nil?
+            blocks[x, y, z].flip_h = block.flip_h unless block.flip_h.nil?
           end
         end
       end

@@ -4,15 +4,15 @@ abstract struct Data
   property color : String?
   property flip_h : String?
 
-  def initialize(@type = nil, @rotation = nil, @color = nil)
+  def initialize(@type = nil, @rotation = nil, @color = nil, @flip_h = nil)
   end
 
   def all_nil?
-    type.nil? && rotation.nil? && color.nil?
+    type.nil? && rotation.nil? && color.nil? && flip_h.nil?
   end
 
   def any_nil?
-    type.nil? || rotation.nil? || color.nil?
+    type.nil? || rotation.nil? || color.nil? || flip_h.nil?
   end
 end
 

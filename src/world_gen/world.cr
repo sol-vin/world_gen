@@ -97,6 +97,12 @@ abstract class World
       else
         last_tile.rotation = (new_tile.rotation ? new_tile.rotation : last_tile.rotation) 
       end
+
+      if new_tile.flip_h == ":erase:"
+        last_tile.flip_h = nil 
+      else
+        last_tile.flip_h = (new_tile.flip_h ? new_tile.flip_h : last_tile.flip_h) 
+      end
     end
     last_tile
   end
@@ -108,6 +114,7 @@ abstract class World
     while(i < passes.size)
       new_block = passes[i].get_block(last_block, x, y, z)
       i += 1
+      #TODO: Macro this?
       if new_block.type == ":erase:"
         last_block.type = nil
       else
@@ -124,6 +131,12 @@ abstract class World
         last_block.rotation = nil
       else
         last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation)
+      end
+
+      if new_block.flip_h == ":erase:"
+        last_block.flip_h = nil
+      else
+        last_block.flip_h = (new_block.flip_h ? new_block.flip_h : last_block.flip_h)
       end
     end 
     last_block
