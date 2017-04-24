@@ -1,7 +1,7 @@
 require "stumpy_png"
 require "yaml"
 
-require "../../data/*"
+require "../../*"
 
 require "./rgba"
 require "./canvas"

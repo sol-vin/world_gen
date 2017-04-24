@@ -20,6 +20,10 @@ class Pass
     define_tile(:rotation) do |last_tile, x, y|
       nil
     end
+
+    define_tile(:flip_h) do |last_tile, x, y|
+      nil
+    end
     
     define_block(:type) do |last_block, x, y, z|
       nil
@@ -32,6 +36,10 @@ class Pass
     define_block(:rotation) do |last_block, x, y, z|
       nil
     end
+
+    define_block(:flip_h) do |last_block, x, y, z|
+      nil
+    end
   end
 
   # Makes a tile using the pass
@@ -40,6 +48,7 @@ class Pass
     tile.type = @tile_procs[:type].call(last_tile, x, y)
     tile.rotation = @tile_procs[:rotation].call(last_tile, x, y)
     tile.color = @tile_procs[:color].call(last_tile, x, y)
+    tile.flip_h = @tile_procs[:flip_h].call(last_tile, x, y)
     tile
   end
   
@@ -49,6 +58,7 @@ class Pass
     block.type = @block_procs[:type].call(last_block, x, y, z)
     block.rotation = @block_procs[:rotation].call(last_block, x, y, z)
     block.color = @block_procs[:color].call(last_block, x, y, z)
+    block.flip_h = @block_procs[:flip_h].call(last_block, x, y, z)
     block
   end
   

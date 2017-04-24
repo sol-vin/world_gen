@@ -1,6 +1,5 @@
 require "./pass"
-require "./tile"
-require "./block"
+require "./data"
 
 #Class to make an isometric world.
 abstract class World
