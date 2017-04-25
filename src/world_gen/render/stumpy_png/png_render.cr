@@ -108,26 +108,26 @@ module PNGRender
   def draw_data(canvas : StumpyCore::Canvas, data : Data, position : Vector2)
     if data.type
       types = [] of String
-      if data.type.to_s.includes?('|')
+      if data.is_a_union?
         data.type.to_s.split('|').each {|t| types << t}
       else
         types << data.type.to_s
       end
       
       types.each do |data_type|
-        new_data = data
-        new_data.type = data_type
-        layers = get_layer_info(data).as(YAML::Any)
+        data_t = data
+        data_t.type = data_type
+        layers = get_layer_info(data_t).as(YAML::Any)
         if layers.to_s != "none"
           layers.each do |layer_name, layer_info|
             # if the layer_name contains a . it is most likely 
             # trying to clone another types layer (ex: block.base)
             if layer_name.to_s.includes?('.')
-              new_data = data
+              new_data = data_t
               new_data.type = layer_name.to_s.split('.')[0]
               draw_layer(canvas, new_data, layer_name.to_s.split('.')[1], layer_info, position)
             else
-              draw_layer(canvas, data, layer_name.to_s, layer_info, position)
+              draw_layer(canvas, data_t, layer_name.to_s, layer_info, position)
             end
           end
         end
