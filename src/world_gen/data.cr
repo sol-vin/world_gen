@@ -16,7 +16,7 @@ abstract struct Data
   end
 
   def is_a_union?
-    type.to_s.include?('|')
+    type.to_s.includes?('|')
   end
 end
 
