@@ -51,12 +51,12 @@ module PNGRender
   private def get_layer_info(data : Data) : YAML::Any?
     if data.type
       asset = if data.is_a?(Tile) 
-              assets.tiles[data.type]
-            elsif data.is_a?(Block)
-              assets.blocks[data.type]
-            else
-              raise "data was not Data I guess IDK."
-            end
+                assets.tiles[data.type]
+              elsif data.is_a?(Block)
+                assets.blocks[data.type]
+              else
+                raise "data was not Data I guess IDK."
+              end
       layers = YAML.parse("blank: []")
       if data.rotation && asset.config["views"][view][data.rotation.as(String)]?
         layers = asset.config["views"][view][data.rotation.as(String)]
@@ -107,17 +107,29 @@ module PNGRender
 
   def draw_data(canvas : StumpyCore::Canvas, data : Data, position : Vector2)
     if data.type
-      layers = get_layer_info(data).as(YAML::Any)
-
-      layers.each do |layer_name, layer_info|
-        # if the layer_name contains a . it is most likely 
-        # trying to clone another types layer (ex: block.base)
-        if layer_name.to_s.includes?('.')
-          new_data = data
-          new_data.type = layer_name.to_s.split('.')[0]
-          draw_layer(canvas, new_data, layer_name.to_s.split('.')[1], layer_info, position)
-        else
-          draw_layer(canvas, data, layer_name.to_s, layer_info, position)
+      types = [] of String
+      if data.type.to_s.includes?('|')
+        data.type.to_s.split('|').each {|t| types << t}
+      else
+        types << data.type.to_s
+      end
+      
+      types.each do |data_type|
+        new_data = data
+        new_data.type = data_type
+        layers = get_layer_info(data).as(YAML::Any)
+        if layers.to_s != "none"
+          layers.each do |layer_name, layer_info|
+            # if the layer_name contains a . it is most likely 
+            # trying to clone another types layer (ex: block.base)
+            if layer_name.to_s.includes?('.')
+              new_data = data
+              new_data.type = layer_name.to_s.split('.')[0]
+              draw_layer(canvas, new_data, layer_name.to_s.split('.')[1], layer_info, position)
+            else
+              draw_layer(canvas, data, layer_name.to_s, layer_info, position)
+            end
+          end
         end
       end
     end

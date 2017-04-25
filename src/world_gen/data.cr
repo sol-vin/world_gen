@@ -14,6 +14,10 @@ abstract struct Data
   def any_nil?
     type.nil? || rotation.nil? || color.nil? || flip_h.nil?
   end
+
+  def is_a_union?
+    type.to_s.include?('|')
+  end
 end
 
 struct Tile < Data
