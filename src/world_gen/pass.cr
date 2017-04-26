@@ -3,17 +3,22 @@ require "./data"
 class Pass
   alias TileProc = Proc(Array(Tile), Array(Tile), Int32, Int32, Tile)
   alias BlockProc = Proc(Array(Block), Array(Block), Int32, Int32, Int32, Block)
+  
+  BASIC TILE_PROC =  ->(last_tiles, tiles, x, y) do
+    Tile.new
+  end
 
-  def initialize
+  BASIC_BLOCKPROC = ->(last_blocks, blocks, x, y, z) do
+    Block.new
+  end
+
+
+  def initialize(defaults = false)
     @tile_procs = [] of TileProc
     @block_procs = [] of BlockProc
-    
-    define_tile do |last_tiles, tiles, x, y|
-      Tile.new
-    end
-    
-    define_block do |last_blocks, blocks, x, y, z|
-      Block.new
+    if defaults
+      define_tile &BASIC_TILEPROC
+      define_block &BASIC_BLOCKPROC
     end
   end
 

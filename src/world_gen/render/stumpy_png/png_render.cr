@@ -150,9 +150,9 @@ module PNGRender
           end
         end
       when "south_west"
-        x_range.each do |y|
-          y_range.each do |x|
-            draw_tiles(canvas, x_range.size - 1 - y, x)
+        y_range.each do |y|
+          x_range.each do |x|
+            draw_tiles(canvas, y_range.size - 1 - y, x)
           end
         end
       when "north_west"
@@ -162,9 +162,9 @@ module PNGRender
           end
         end
       when "north_east"
-        x_range.each do |y|
-          y_range.each do |x|
-            draw_tiles(canvas, y, y_range.size - 1 - x)
+        y_range.each do |y|
+          x_range.each do |x|
+            draw_tiles(canvas, y, x_range.size - 1 - x)
           end
         end
       else
@@ -183,10 +183,10 @@ module PNGRender
           end
         end
       when "south_west"
-        x_range.each do |y|
-          y_range.each do |x|
+        y_range.each do |y|
+          x_range.each do |x|
             z_range.each do |z|
-              draw_blocks(canvas, x_range.size - 1 - y, x, z)
+              draw_blocks(canvas, y_range.size - 1 - y, x, z)
             end
           end
         end
@@ -194,13 +194,13 @@ module PNGRender
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              draw_blocks(canvas, x_range.size - 1 - x, x_range.size - 1 - y, z)
+              draw_blocks(canvas, x_range.size - 1 - x, y_range.size - 1 - y, z)
             end
           end
         end
       when "north_east"
-        x_range.each do |y|
-          y_range.each do |x|
+        y_range.each do |y|
+          x_range.each do |x|
             z_range.each do |z|
               draw_blocks(canvas, y, x_range.size - 1 - x, z)
             end
