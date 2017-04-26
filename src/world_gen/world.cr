@@ -3,9 +3,6 @@ require "./data"
 
 #Class to make an isometric world.
 abstract class World
-  # The different faces of a block
-  DIRECTIONS = ["north", "south", "east", "west"]
-  
   # The possible rotations of a block
   ROTATIONS = ["deg_0", "deg_90", "deg_180", "deg_270"]
   
@@ -74,71 +71,20 @@ abstract class World
   end
 
   # Gets a tile from the tiles array at a specified location.
-  def get_tile(x : Int32, y : Int32) : Tile
-    last_tile = Tile.new
-    i = 0
-    while(i < passes.size)
-      new_tile = passes[i].get_tile(last_tile, x, y)
-      i += 1
-      if new_tile.type == ":erase:"
-        last_tile.type = nil 
-      else
-        last_tile.type = (new_tile.type ? new_tile.type : last_tile.type) 
-      end
-
-      if new_tile.color == ":erase:"
-        last_tile.color = nil 
-      else
-        last_tile.color = (new_tile.color ? new_tile.color : last_tile.color) 
-      end
-
-      if new_tile.rotation == ":erase:"
-        last_tile.rotation = nil 
-      else
-        last_tile.rotation = (new_tile.rotation ? new_tile.rotation : last_tile.rotation) 
-      end
-
-      if new_tile.flip_h == ":erase:"
-        last_tile.flip_h = nil 
-      else
-        last_tile.flip_h = (new_tile.flip_h ? new_tile.flip_h : last_tile.flip_h) 
-      end
+  def get_tiles(x : Int32, y : Int32) : Array(Tile)
+    last_tiles = [] of Tile
+    passes.each do |pass|
+      last_tiles = pass.get_tiles(last_tiles, x, y)
     end
-    last_tile
+    last_tiles
   end
   
   # Gets a block from the blocks array at a specified location.
-  def get_block(x : Int32, y : Int32, z : Int32) : Block
-    i = 0
-    last_block = Block.new
-    while(i < passes.size)
-      new_block = passes[i].get_block(last_block, x, y, z)
-      i += 1
-      #TODO: Macro this?
-      if new_block.type == ":erase:"
-        last_block.type = nil
-      else
-        last_block.type = (new_block.type ? new_block.type : last_block.type)
-      end
-
-      if new_block.color == ":erase:"
-        last_block.color = nil
-      else
-        last_block.color = (new_block.color ? new_block.color : last_block.color)
-      end
-
-      if new_block.rotation == ":erase:"
-        last_block.rotation = nil
-      else
-        last_block.rotation = (new_block.rotation ? new_block.rotation : last_block.rotation)
-      end
-
-      if new_block.flip_h == ":erase:"
-        last_block.flip_h = nil
-      else
-        last_block.flip_h = (new_block.flip_h ? new_block.flip_h : last_block.flip_h)
-      end
-    end 
-    last_block
+  def get_blocks(x : Int32, y : Int32, z : Int32) : Array(Block)
+    last_blocks = [] of Block
+    passes.each do |pass|
+      last_blocks = pass.get_blocks(last_blocks, x, y, z)
+    end
+    last_blocks
   end
 end

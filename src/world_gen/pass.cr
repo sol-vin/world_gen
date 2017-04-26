@@ -1,71 +1,45 @@
 require "./data"
 
 class Pass
-  alias TileProc = Proc(Tile, Int32, Int32, String?)
-  alias BlockProc = Proc(Block, Int32, Int32, Int32, String?)
-  
+  alias TileProc = Proc(Array(Tile), Array(Tile), Int32, Int32, Tile)
+  alias BlockProc = Proc(Array(Block), Array(Block), Int32, Int32, Int32, Block)
+
   def initialize
-    @tile_procs = {} of Symbol => TileProc
-    @block_procs = {} of Symbol => BlockProc
+    @tile_procs = [] of TileProc
+    @block_procs = [] of BlockProc
     
-    define_tile(:type) do |last_tile, x, y|
-      nil
-    end
-    
-    define_tile(:color) do |last_tile, x, y|
-      nil
+    define_tile do |last_tiles, tiles, x, y|
+      Tile.new
     end
     
-    define_tile(:rotation) do |last_tile, x, y|
-      nil
-    end
-
-    define_tile(:flip_h) do |last_tile, x, y|
-      nil
-    end
-    
-    define_block(:type) do |last_block, x, y, z|
-      nil
-    end
-    
-    define_block(:color) do |last_block, x, y, z|
-      nil
-    end
-    
-    define_block(:rotation) do |last_block, x, y, z|
-      nil
-    end
-
-    define_block(:flip_h) do |last_block, x, y, z|
-      nil
+    define_block do |last_blocks, blocks, x, y, z|
+      Block.new
     end
   end
 
   # Makes a tile using the pass
-  def get_tile(last_tile : Tile, x : Int32, y : Int32) : Tile
-    tile = Tile.new
-    tile.type = @tile_procs[:type].call(last_tile, x, y)
-    tile.rotation = @tile_procs[:rotation].call(last_tile, x, y)
-    tile.color = @tile_procs[:color].call(last_tile, x, y)
-    tile.flip_h = @tile_procs[:flip_h].call(last_tile, x, y)
-    tile
+  def get_tiles(last_tiles : Array(Tile), x : Int32, y : Int32) : Array(Tile)
+    tiles = [] of Tile
+    @tile_procs.each do |tile_proc|
+      tiles << tile_proc.call(last_tiles, tiles, x, y)
+    end
+    tiles
   end
   
   # Makes a block using the pass
-  def get_block(last_block : Block, x : Int32, y : Int32, z : Int32) : Block
-    block = Block.new
-    block.type = @block_procs[:type].call(last_block, x, y, z)
-    block.rotation = @block_procs[:rotation].call(last_block, x, y, z)
-    block.color = @block_procs[:color].call(last_block, x, y, z)
-    block.flip_h = @block_procs[:flip_h].call(last_block, x, y, z)
-    block
+  def get_blocks(last_blocks : Array(Block), x : Int32, y : Int32, z : Int32) : Array(Block)
+    blocks = [] of Block
+    @block_procs.each do |block_proc|
+      blocks << block_proc.call(last_blocks, blocks, x, y, z)
+    end
+    blocks
   end
   
-  def define_tile(name : Symbol, &block : TileProc)
-    @tile_procs[name] = block
+  def define_tile(&block : TileProc)
+    @tile_procs << block
   end
 
-  def define_block(name : Symbol, &block : BlockProc)
-    @block_procs[name] = block
+  def define_block(&block : BlockProc)
+    @block_procs << block
   end
 end

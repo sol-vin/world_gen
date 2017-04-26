@@ -14,7 +14,7 @@ module PNGRender
   # Which direction the camera is facing currently
   getter view : String = VIEWS.values.last
 
-    # Rotates the view counter clockwise
+  # Rotates the view counter clockwise
   def rotate_counter_clockwise
     @view = VIEWS[view]
   end
@@ -58,12 +58,12 @@ module PNGRender
                 raise "data was not Data I guess IDK."
               end
       layers = YAML.parse("blank: []")
-      if data.rotation && asset.config["views"][view][data.rotation.as(String)]?
-        layers = asset.config["views"][view][data.rotation.as(String)]
+      if data[:rotation]? && asset.config["views"][view][data[:rotation]]?
+        layers = asset.config["views"][view][data[:rotation]]
       elsif asset.config["views"][view]["none"]?
         layers = asset.config["views"][view]["none"]
       else
-        raise "asset did not have any configuration for rotation #{data.type} #{data.rotation}"
+        raise "asset did not have any configuration for rotation #{data.type} #{data[:rotation]?}"
       end
       return layers
     end
@@ -79,7 +79,7 @@ module PNGRender
             end
     has_layer_color = layer_info != "none" && layer_info["color"]?
     has_layer_flip_h = layer_info != "none" && layer_info["flip_h"]? == "true"
-    has_data_flip_h = data.flip_h == "true"
+    has_data_flip_h = data[:flip_h]? == "true"
     flip_h =  has_data_flip_h ^ has_layer_flip_h
     if has_layer_color && (layer_info["color"]? != "none") && !flip_h
       color = StumpyCore::RGBA.from_hex9(layer_info["color"].to_s)
@@ -91,11 +91,11 @@ module PNGRender
       canvas.paste_and_flip_h(asset, position.x, position.y)
     elsif has_layer_color && (layer_info["color"]? == "none") && !flip_h
       canvas.paste(asset, position.x, position.y)
-    elsif data.color && !flip_h
-      color = StumpyCore::RGBA.from_hex9(data.color.as(String))
+    elsif data[:color]? && !flip_h
+      color = StumpyCore::RGBA.from_hex9(data[:color])
       canvas.paste_and_tint(asset, position.x, position.y, color) 
-    elsif data.color && flip_h
-      color = StumpyCore::RGBA.from_hex9(data.color.as(String))
+    elsif data[:color]? && flip_h
+      color = StumpyCore::RGBA.from_hex9(data[:color])
       canvas.paste_and_flip_h_and_tint(asset, position.x, position.y, color)
     elsif flip_h
       canvas.paste_and_flip_h(asset, position.x, position.y)
@@ -107,66 +107,64 @@ module PNGRender
 
   def draw_data(canvas : StumpyCore::Canvas, data : Data, position : Vector2)
     if data.type
-      types = [] of String
-      if data.is_a_union?
-        data.type.to_s.split('|').each {|t| types << t}
-      else
-        types << data.type.to_s
-      end
-      
-      types.each do |data_type|
-        data_t = data
-        data_t.type = data_type
-        layers = get_layer_info(data_t).as(YAML::Any)
-        if layers.to_s != "none"
-          layers.each do |layer_name, layer_info|
-            # if the layer_name contains a . it is most likely 
-            # trying to clone another types layer (ex: block.base)
-            if layer_name.to_s.includes?('.')
-              new_data = data_t
-              new_data.type = layer_name.to_s.split('.')[0]
-              draw_layer(canvas, new_data, layer_name.to_s.split('.')[1], layer_info, position)
-            else
-              draw_layer(canvas, data_t, layer_name.to_s, layer_info, position)
-            end
+      layers = get_layer_info(data).as(YAML::Any)
+      if layers.to_s != "none"
+        layers.each do |layer_name, layer_info|
+          # if the layer_name contains a . it is most likely 
+          # trying to clone another types layer (ex: block.base)
+          if layer_name.to_s.includes?('.')
+            new_data = data
+            new_data.type = layer_name.to_s.split('.')[0]
+            draw_layer(canvas, new_data, layer_name.to_s.split('.')[1], layer_info, position)
+          else
+            draw_layer(canvas, data, layer_name.to_s, layer_info, position)
           end
         end
       end
     end
   end
 
-  def draw_tiles(canvas : StumpyCore::Canvas)
+  def draw_tiles(canvas, x, y)
+    tiles = get_tiles(x,y)
+    
+    position = get_tile_position(x - x_range.begin, y - y_range.begin)
+    tiles.each do |tile|
+      draw_data(canvas, tile, position)
+    end
+  end
+
+  def draw_blocks(canvas, x, y, z)
+    blocks = get_blocks(x, y, z)
+    position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
+    blocks.each do |block|
+      draw_data(canvas, block, position)
+    end
+  end
+
+  def draw_all_tiles(canvas : StumpyCore::Canvas)
     case view
       when "south_east"
         y_range.each do |y|
           x_range.each do |x|
-            tile = get_tile(x,y)
-            position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_data(canvas, tile, position)
+            draw_tiles(canvas, x, y)
           end
         end
       when "south_west"
         x_range.each do |y|
           y_range.each do |x|
-            tile = get_tile(x_range.size - 1 - y, x)
-            position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_data(canvas, tile, position)
+            draw_tiles(canvas, x_range.size - 1 - y, x)
           end
         end
       when "north_west"
         y_range.each do |y|
           x_range.each do |x|
-            tile = get_tile(x_range.size - 1 - x, y_range.size - 1 - y)
-            position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_data(canvas, tile, position)
+            draw_tiles(canvas, x_range.size - 1 - x, y_range.size - 1 - y)
           end
         end
       when "north_east"
         x_range.each do |y|
           y_range.each do |x|
-            tile = get_tile(y, y_range.size - 1 - x)
-            position = get_tile_position(x - x_range.begin, y - y_range.begin)
-            draw_data(canvas, tile, position)
+            draw_tiles(canvas, y, y_range.size - 1 - x)
           end
         end
       else
@@ -174,15 +172,13 @@ module PNGRender
     end
   end
   
-  def draw_blocks(canvas : StumpyCore::Canvas)
+  def draw_all_blocks(canvas : StumpyCore::Canvas)
     case view
       when "south_east"
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              block = get_block(x, y, z)
-              position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_data(canvas, block, position)
+              draw_blocks(canvas, x, y, z)
             end
           end
         end
@@ -190,9 +186,7 @@ module PNGRender
         x_range.each do |y|
           y_range.each do |x|
             z_range.each do |z|
-              block = get_block(x_range.size - 1 - y, x, z)
-              position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_data(canvas, block, position)
+              draw_blocks(canvas, x_range.size - 1 - y, x, z)
             end
           end
         end
@@ -200,9 +194,7 @@ module PNGRender
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              block = get_block(x_range.size - 1 - x, x_range.size - 1 - y, z)
-              position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_data(canvas, block, position)
+              draw_blocks(canvas, x_range.size - 1 - x, x_range.size - 1 - y, z)
             end
           end
         end
@@ -210,9 +202,7 @@ module PNGRender
         x_range.each do |y|
           y_range.each do |x|
             z_range.each do |z|
-              block = get_block(y, x_range.size - 1 - x, z)
-              position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
-              draw_data(canvas, block, position)
+              draw_blocks(canvas, y, x_range.size - 1 - x, z)
             end
           end
         end
@@ -220,15 +210,15 @@ module PNGRender
         raise "view was wrong #{view}"
     end
   end
-
+  
   def draw_world(filename : String)
     image_bounds = calculate_image_bounds
     # TODO: ZOOM
     #   To zoom, use stumpy_png to zoom the canvas perfectly using the magnification provided.
     canvas = StumpyPNG::Canvas.new(image_bounds[:width], image_bounds[:height])
     
-    draw_tiles(canvas)
-    draw_blocks(canvas)
+    draw_all_tiles(canvas)
+    draw_all_blocks(canvas)
     StumpyPNG.write(canvas, filename)
   end
 end

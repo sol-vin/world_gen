@@ -1,22 +1,17 @@
 abstract struct Data
   property type : String?
-  property rotation : String?
-  property color : String?
-  property flip_h : String?
+  getter tags = {} of Symbol => String
 
-  def initialize(@type = nil, @rotation = nil, @color = nil, @flip_h = nil)
+  def []=(key, value)
+    @tags[key] = value
   end
 
-  def all_nil?
-    type.nil? && rotation.nil? && color.nil? && flip_h.nil?
+  def [](key)
+    @tags[key]
   end
 
-  def any_nil?
-    type.nil? || rotation.nil? || color.nil? || flip_h.nil?
-  end
-
-  def is_a_union?
-    type.to_s.includes?('|')
+  def []?(key)
+    @tags[key]?
   end
 end
 
