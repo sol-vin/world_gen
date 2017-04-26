@@ -58,8 +58,8 @@ module PNGRender
                 raise "data was not Data I guess IDK."
               end
       layers = YAML.parse("blank: []")
-      if data[:rotation]? && asset.config["views"][view][data[:rotation]]?
-        layers = asset.config["views"][view][data[:rotation]]
+      if data[:rotation]? && asset.config["views"][view][data[:rotation].to_s]?
+        layers = asset.config["views"][view][data[:rotation].to_s]
       elsif asset.config["views"][view]["none"]?
         layers = asset.config["views"][view]["none"]
       else
@@ -92,10 +92,10 @@ module PNGRender
     elsif has_layer_color && (layer_info["color"]? == "none") && !flip_h
       canvas.paste(asset, position.x, position.y)
     elsif data[:color]? && !flip_h
-      color = StumpyCore::RGBA.from_hex9(data[:color])
+      color = StumpyCore::RGBA.from_hex9(data[:color].to_s)
       canvas.paste_and_tint(asset, position.x, position.y, color) 
     elsif data[:color]? && flip_h
-      color = StumpyCore::RGBA.from_hex9(data[:color])
+      color = StumpyCore::RGBA.from_hex9(data[:color].to_s)
       canvas.paste_and_flip_h_and_tint(asset, position.x, position.y, color)
     elsif flip_h
       canvas.paste_and_flip_h(asset, position.x, position.y)

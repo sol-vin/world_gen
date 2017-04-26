@@ -1,6 +1,6 @@
 abstract struct Data
   property type : String?
-  getter tags = {} of Symbol => String
+  getter tags = {} of Symbol => String?
 
   def []=(key, value)
     @tags[key] = value
