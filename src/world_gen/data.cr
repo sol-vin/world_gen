@@ -1,6 +1,12 @@
 abstract struct Data
   property type : String?
   property tags = {} of Symbol => String?
+  
+  def initialize(@type = nil, **args)
+    args.each do |k, v|
+      tags[k] = v
+    end
+  end
 
   def []=(key, value)
     @tags[key] = value
