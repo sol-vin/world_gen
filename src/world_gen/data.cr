@@ -1,6 +1,6 @@
 abstract struct Data
   property type : String?
-  getter tags = {} of Symbol => String?
+  property tags = {} of Symbol => String?
 
   def []=(key, value)
     @tags[key] = value
@@ -12,6 +12,12 @@ abstract struct Data
 
   def []?(key)
     @tags[key]?
+  end
+
+  def clone : Data
+    new_data = self
+    new_data.tags = @tags.dup
+    new_data
   end
 end
 

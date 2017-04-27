@@ -4,8 +4,11 @@ require "./data"
 #Class to make an isometric world.
 abstract class World
   # The possible rotations of a block
-  ROTATIONS = ["deg_0", "deg_90", "deg_180", "deg_270"]
-  
+  ROTATIONS = {
+    "deg_0" => "deg_90",
+    "deg_90" => "deg_180",
+    "deg_180" => "deg_270",
+    "deg_270" => "deg_0"}
   # The potential neighbors of a block
   POSSIBLE_BLOCK_NEIGHBORS = {:front => {:x => 0, :y => 1, :z => 0},
                               :left => {:x => 1, :y => 0, :z => 0},

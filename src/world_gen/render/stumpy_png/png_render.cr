@@ -124,18 +124,17 @@ module PNGRender
     end
   end
 
-  def draw_tiles(canvas, x, y)
+  def draw_tiles(canvas, x, y, pos_x, pos_y)
     tiles = get_tiles(x,y)
-    
-    position = get_tile_position(x - x_range.begin, y - y_range.begin)
+    position = get_tile_position(pos_x - x_range.begin, pos_y - y_range.begin)
     tiles.each do |tile|
       draw_data(canvas, tile, position)
     end
   end
 
-  def draw_blocks(canvas, x, y, z)
+  def draw_blocks(canvas, x, y, z, pos_x, pos_y, pos_z)
     blocks = get_blocks(x, y, z)
-    position = get_block_position(x - x_range.begin, y - y_range.begin, z - z_range.begin)
+    position = get_block_position(pos_x - x_range.begin, pos_y - y_range.begin, pos_z - z_range.begin)
     blocks.each do |block|
       draw_data(canvas, block, position)
     end
@@ -146,25 +145,25 @@ module PNGRender
       when "south_east"
         y_range.each do |y|
           x_range.each do |x|
-            draw_tiles(canvas, x, y)
+            draw_tiles(canvas, x, y, x, y)
           end
         end
       when "south_west"
         y_range.each do |y|
           x_range.each do |x|
-            draw_tiles(canvas, y_range.size - 1 - y, x)
+            draw_tiles(canvas, y_range.size - 1 - y, x, x, y)
           end
         end
       when "north_west"
         y_range.each do |y|
           x_range.each do |x|
-            draw_tiles(canvas, x_range.size - 1 - x, y_range.size - 1 - y)
+            draw_tiles(canvas, x_range.size - 1 - x, y_range.size - 1 - y, x, y)
           end
         end
       when "north_east"
         y_range.each do |y|
           x_range.each do |x|
-            draw_tiles(canvas, y, x_range.size - 1 - x)
+            draw_tiles(canvas, y, x_range.size - 1 - x, x, y)
           end
         end
       else
@@ -178,7 +177,7 @@ module PNGRender
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              draw_blocks(canvas, x, y, z)
+              draw_blocks(canvas, x, y, z, x, y, z)
             end
           end
         end
@@ -186,7 +185,7 @@ module PNGRender
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              draw_blocks(canvas, y_range.size - 1 - y, x, z)
+              draw_blocks(canvas, y_range.size - 1 - y, x, z, x, y, z)
             end
           end
         end
@@ -194,7 +193,7 @@ module PNGRender
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              draw_blocks(canvas, x_range.size - 1 - x, y_range.size - 1 - y, z)
+              draw_blocks(canvas, x_range.size - 1 - x, y_range.size - 1 - y, z, x, y, z)
             end
           end
         end
@@ -202,7 +201,7 @@ module PNGRender
         y_range.each do |y|
           x_range.each do |x|
             z_range.each do |z|
-              draw_blocks(canvas, y, x_range.size - 1 - x, z)
+              draw_blocks(canvas, y, x_range.size - 1 - x, z, x, y, z)
             end
           end
         end
