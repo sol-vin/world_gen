@@ -1,6 +1,6 @@
 require "stumpy_core"
 class StumpyCore::Canvas
-  def paste_and_tint(canvas : Canvas, x, y, color : RGBA)
+  def paste(canvas : Canvas, x, y, color : RGBA)
       (0...canvas.width).each do |cx|
         (0...canvas.height).each do |cy|
           current = safe_get(x + cx, y + cy)
@@ -11,7 +11,7 @@ class StumpyCore::Canvas
       end
   end
 
-  def paste_and_flip_h(canvas : Canvas, x, y)
+  def paste_flip(canvas : Canvas, x, y)
     (0...canvas.width).each do |cx|
       (0...canvas.height).each do |cy|
         current = safe_get(x + cx, y + cy)
@@ -23,7 +23,7 @@ class StumpyCore::Canvas
     end
   end
 
-  def paste_and_flip_h_and_tint(canvas : Canvas, x, y, color : RGBA)
+  def paste_flip(canvas : Canvas, x, y, color : RGBA)
     (0...canvas.width).each do |cx|
       (0...canvas.height).each do |cy|
         current = safe_get(x + cx, y + cy)
